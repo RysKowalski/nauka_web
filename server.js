@@ -20,6 +20,10 @@ app.get('/nauka/api/list', (req,   res) => {
 	res.sendFile(__dirname + "/data/dane_nauka.json")
 })
 
+app.get('/nauka/gra', (req,   res) => {
+	res.sendFile(__dirname + "/public/html/nauka_gra.html")
+})
+
 app.listen(PORT, () => {
 	console.log(`Serwer działa na http://localhost:${PORT}`);
   });
