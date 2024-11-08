@@ -1,0 +1,182 @@
+{
+	"points": {
+	  "prawa": {
+		"max_points": 0,
+		"points": 0,
+		"sznury_choragwia": {
+		  "max_points": 44,
+		  "points": 0,
+		  "test": {
+			"max_points": 44,
+			"points": 0,
+			"testowy zbior": {
+			  "max_points": 0,
+			  "points": 0
+			}
+		  }
+		}
+	  },
+	  "angielski nauka 2/4": {
+		"points": 0,
+		"max_points": 75
+	  }
+	},
+	"prawa": {
+	  "chances": [
+		118.05555555555557,
+		100,
+		100,
+		83.33333333333334,
+		289,
+		100,
+		141.66666666666669,
+		170,
+		170,
+		100
+	  ],
+	  "data": [
+		"Mam szczerą wolę, całym życiem pełnić służbę bogu i Polsce, nieść chętną pomoc bliźnim i być posłusznym prawu harcerskiemu.",
+		"1. Harcerz służy Bogu i Polsce i sumiennie spełnia swoje obowiązki.",
+		"2. Na słowie harcerza polegaj jak na Zawiszy.",
+		"3. Harcerz jest pożyteczny i niesie pomoc bliźnim.",
+		"4. Harcerz w każdym widzi bliźniego, a za brata uważa każdego innego harcerza.",
+		"5. Harcerz postępuje po rycersku.",
+		"6. Harcerz miłuje przyrodę i stara się ją poznać.",
+		"7. Harcerz jest karny i posłuszny rodzicom i wszystkim swoim przełożonym.",
+		"8. Harcerz jest zawsze pogodny.",
+		"9. Harcerz jest oszczędny i ofiarny.",
+		"10. Harcerz jest czysty w myśli, mowie i uczynku, nie pali tytoniu i nie pije napojów alkoholowych."
+	  ],
+	  "names": [
+		"przyrzeczenie",
+		"1",
+		"2",
+		"3",
+		"4",
+		"5",
+		"6",
+		"7",
+		"8",
+		"9",
+		"10"
+	  ]
+	},
+	"sznury_choragwia": {
+	  "chances": [
+		240.83333333333337,
+		100,
+		100,
+		141.66666666666669,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100
+	  ],
+	  "data": [
+		"brązowy spod ramienia",
+		"zielony spod ramienia",
+		"granatowy spod ramienia",
+		"srebrny z ramienia",
+		"srebrny spod ramienia",
+		"srebrny spod kołnierza",
+		"granatowy z ramienia",
+		"złoty z ramienia",
+		"złoty spod ramienia",
+		"złoty spod kołnierza"
+	  ],
+	  "names": [
+		"zastępowy",
+		"przyboczny",
+		"drużynowy",
+		"hufcowy",
+		"zastępca hufcowego",
+		"członkowie komendy hufca",
+		"szczepowy",
+		"komendant chorągwi",
+		"zastępca komendanta chorągwi",
+		"członkowie komendy chorągwi"
+	  ]
+	},
+	"angielski nauka 2/4": {
+	  "chances": [
+		38.7653349404602,
+		121.59365957973907,
+		19.066631313384573,
+		24.949193649207402,
+		53.29333719994142,
+		12.27923440284342,
+		43.722613641610515,
+		16.150558288984584,
+		23.256803936137796,
+		31.88805815722305,
+		33.51282198719434,
+		55.91439540054467,
+		29.25261313243875,
+		28.521875101593224,
+		39.53656669143424,
+		65.99136284219742,
+		26.31856746380583,
+		74.54716305252735,
+		19.3806699467815,
+		56.010136146198505,
+		26.30288394099507,
+		43.98376645345757,
+		15.888859427820478,
+		34.69967975351344
+	  ],
+	  "data": [
+		"ate, eaten",
+		"fell, fallen",
+		"fed, fed",
+		"felt, felt",
+		"fought, fought",
+		"found, found",
+		"flew, flown",
+		"forecast, forecast",
+		"forgot, forgot/forgotten",
+		"got, got/gotten",
+		"gave, given",
+		"went, gone",
+		"grew, grown",
+		"had, had",
+		"heard, heard",
+		"hid, hidden",
+		"hit, hit",
+		"held, held",
+		"hurt, hurt",
+		"kept, kept",
+		"knew, known",
+		"led, led",
+		"learnt, learnt",
+		"left, left"
+	  ],
+	  "names": [
+		"eat",
+		"fall",
+		"feed",
+		"feel",
+		"fight",
+		"find",
+		"fly",
+		"forecast",
+		"forget",
+		"get",
+		"give",
+		"go",
+		"grow",
+		"have",
+		"hear",
+		"hide",
+		"hit",
+		"hold",
+		"hurt",
+		"keep",
+		"know",
+		"lead",
+		"learn",
+		"leave"
+	  ]
+	}
+  }
