@@ -1,7 +1,7 @@
 // Funkcja ładująca dane z API i generująca checkboxy
 async function loadCheckboxes() {
 	try {
-	  const response = await fetch('/nauka/api/list');
+	  const response = await fetch('/nauka/api/data');
 	  if (!response.ok) {
 		throw new Error(`Błąd HTTP: ${response.status}`);
 	  }

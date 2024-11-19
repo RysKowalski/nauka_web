@@ -5,9 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Odczyt parametrów URL</title>
   <script src="/js/script_nauka_gra.js"></script>
+  <style>
+	#dynamicElement {
+		display: none;
+		padding: 20px;
+		background-color: #4caf50;
+		color: white;
+		text-align: center;
+		border-radius: 8px;
+	}
+</style>
 </head>
 <body>
   <h1>Odczyt parametrów URL</h1>
   <div id="output"></div>
+  <h1>Dynamic Element Visibility</h1>
+  <div id="dynamicElement">This element is visible!</div>
+  <script src="/js/script_nauka_gra.js"></script>
+  <form action="/api/data" method="POST">
+	<input type="hidden" name="key" value="true"> <!-- Ukryte dane do wysłania -->
+	<button type="submit">Wyślij dane</button>
+  </form>
 </body>
 </html>

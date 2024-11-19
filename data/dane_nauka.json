@@ -18,7 +18,27 @@
 	  },
 	  "angielski nauka 2/4": {
 		"points": 0,
-		"max_points": 75
+		"max_points": 75,
+		"angielski 3/4": {
+		  "points": 0,
+		  "max_points": 1
+		}
+	  },
+	  "test": {
+		"points": 0,
+		"max_points": 10
+	  },
+	  "angielski 3/4": {
+		"points": 0,
+		"max_points": 27
+	  },
+	  "chemia kwasy w-n": {
+		"points": 0,
+		"max_points": 0
+	  },
+	  "przykazania": {
+		"points": 0,
+		"max_points": 15
 	  }
 	},
 	"prawa": {
@@ -102,25 +122,25 @@
 	"angielski nauka 2/4": {
 	  "chances": [
 		38.7653349404602,
-		121.59365957973907,
+		52.76774599407048,
 		19.066631313384573,
 		24.949193649207402,
-		53.29333719994142,
+		37.00926194440377,
 		12.27923440284342,
-		43.722613641610515,
-		16.150558288984584,
+		36.43551136800876,
+		13.458798574153821,
 		23.256803936137796,
-		31.88805815722305,
+		22.1444848314049,
 		33.51282198719434,
 		55.91439540054467,
-		29.25261313243875,
-		28.521875101593224,
-		39.53656669143424,
-		65.99136284219742,
+		20.314314675304686,
+		40.40598972725707,
+		32.94713890952853,
+		54.99280236849785,
 		26.31856746380583,
-		74.54716305252735,
+		43.14071935910148,
 		19.3806699467815,
-		56.010136146198505,
+		60.8787440914301,
 		26.30288394099507,
 		43.98376645345757,
 		15.888859427820478,
@@ -177,6 +197,168 @@
 		"lead",
 		"learn",
 		"leave"
+	  ]
+	},
+	"angielski 3/4": {
+	  "chances": [
+		197.44245113168728,
+		57.87037037037038,
+		133.73812146054203,
+		134.1672884602915,
+		48.22530864197532,
+		341.18055555555554,
+		69.44444444444446,
+		40.1877572016461,
+		75.44765268800025,
+		81.98302469135804,
+		48.22530864197532,
+		67.21216337543821,
+		467.8022581066645,
+		81.98302469135804,
+		146.37490789698023,
+		80.65459605052587,
+		33.615764448760366,
+		167.24537037037038,
+		615.9949638064892,
+		48.22530864197532,
+		343.47620062249854,
+		293.48705640859663,
+		199.62809373359948,
+		69.44444444444446
+	  ],
+	  "data": [
+		"lent lent",
+		"let let",
+		"lay lain",
+		"lit lit",
+		"lost",
+		"meant meant",
+		"made made",
+		"met met",
+		"paid paid",
+		"proved proven",
+		"put put",
+		"read read",
+		"rode ridden",
+		"rang rung",
+		"rose risen",
+		"ran run",
+		"said said",
+		"saw seen",
+		"sold sold",
+		"sent sent",
+		"shook shaken",
+		"shone shone",
+		"showed shown",
+		"shot shot"
+	  ],
+	  "names": [
+		"lend",
+		"let",
+		"lie",
+		"light",
+		"lost lost",
+		"mean",
+		"make",
+		"meet",
+		"pay",
+		"prove",
+		"put",
+		"read",
+		"ride",
+		"ring",
+		"rise",
+		"run",
+		"say",
+		"see",
+		"sell",
+		"send",
+		"shake",
+		"shine",
+		"show",
+		"shoot"
+	  ]
+	},
+	"chemia kwasy w-n": {
+	  "chances": [
+		100,
+		100,
+		170,
+		100,
+		100,
+		201.0419485618492,
+		100,
+		100,
+		100,
+		100,
+		100
+	  ],
+	  "data": [
+		"Kwas chlorowodorowy",
+		"Kwas siarkowodorowy",
+		"Kwas bromowodorowy",
+		"Kwas jodowodorowy",
+		"Kwas fluorowodorowy",
+		"Kwas siarkowy(VI)",
+		"Kwas siarkowy(IV)",
+		"Kwas azotowy(V)",
+		"Kwas fosforowy(V)",
+		"Kwas węglowy",
+		"Kwas borowy"
+	  ],
+	  "names": [
+		"HCl",
+		"H₂S",
+		"HBr",
+		"HI",
+		"HF",
+		"H₂SO₄",
+		"H₂SO₃",
+		"HNO₃",
+		"H₃PO₄",
+		"H₂CO₃",
+		"H₃BO₃"
+	  ]
+	},
+	"przykazania": {
+	  "chances": [
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100
+	  ],
+	  "data": [
+		"Jam jest Pan Bóg twój, który cię wywiódł z ziemi egipskiej z domu niewoli.",
+		" Nie będziesz miał bogów cudzych przede Mną.",
+		"Nie będziesz brał imienia Pana Boga swego na daremno.",
+		"Pamiętaj , abyś dzień święty święcił.",
+		"Czcij ojca swego i matkę swoją.",
+		"Nie zabijaj.",
+		"Nie cudzołóż.",
+		"Nie kradnij.",
+		"Nie mów fałszywego świadectwa przeciw bliźniemu swemu.",
+		"Nie pożądaj żony bliźniego swego.",
+		"Ani żadnej rzeczy , która jego jest. "
+	  ],
+	  "names": [
+		"początek",
+		"1",
+		"2",
+		"3",
+		"4",
+		"5",
+		"6",
+		"7",
+		"8",
+		"9",
+		"10"
 	  ]
 	}
   }

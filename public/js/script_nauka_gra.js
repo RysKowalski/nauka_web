@@ -37,3 +37,33 @@ window.onload = function() {
 	output += '</ul>';
 	document.getElementById('output').innerHTML = output;
   }
+
+async function checkBackendVariable() {
+	try {
+		// Symulacja żądania do backendu
+		const response = await fetch('/backend-status'); // Ustaw swój endpoint
+		const data = await response.json();
+
+		// Zmienna sterująca
+		const showElement = data.showElement;
+
+		// Wyświetl/ukryj element na podstawie zmiennej
+		const element = document.getElementById('dynamicElement');
+		element.style.display = showElement ? 'block' : 'none';
+	} catch (error) {
+		console.error('Error fetching backend variable:', error);
+	}
+}
+
+// Sprawdzaj wartość co 2 sekundy
+setInterval(checkBackendVariable, 2000);
+
+function handleClick() {
+	fetch('/api/data', {
+		method: 'POST', // Możesz użyć 'GET', 'PUT', 'DELETE' itp.
+		headers: {
+		  'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ key: true }) // Dane wysyłane w żądaniu
+	  })
+  }
