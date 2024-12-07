@@ -91,3 +91,9 @@ body {
 .button.correct:hover {
 	background-color: darkgreen;
 }
+
+#chances ul {
+	list-style-type: none; /* Remove the default bullet points */
+	padding: 0;
+	margin: 0;
+}

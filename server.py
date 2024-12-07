@@ -72,8 +72,22 @@ def kolejny_test(data: dict):
 						}
 	return updated_dict
 
-#@app.get('/nauka/api/get_data')
-
+@app.get('/nauka/init')
+def nauka_init():
+	updated_dict: dict = {'element_list': {
+										'example_name':2137,
+										'example_name2':7312
+									   },
+						'points': 666,
+						'max_points': 1234,
+						'question': 'ile to 5Σi=3(i+1)',
+						'answer': 'skibiditoilet jest zawsze odpowiedzią',
+						'time':10,
+						'show_done': True,
+						'show_answer': True,
+						'show_user_answer': True
+						}
+	return updated_dict
 
 if __name__ == "__main__":
 	import uvicorn
