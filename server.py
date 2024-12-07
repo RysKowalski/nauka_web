@@ -10,14 +10,27 @@ def get_path(name: str) -> str:
 
 PORT: int = 3000
 
-app = FastAPI()
+app: FastAPI = FastAPI()
 
 # Montujemy katalog public, żeby obsługiwać statyczne pliki (JS, CSS)
 app.mount("/static", StaticFiles(directory="public"), name="public")
 
 
-global show
-show = False
+global game
+game: dict = {'element_list': {
+								'example_name':2137,
+								'example_name2':7312
+							   },
+			'points': 666,
+			'max_points': 1234,
+			'question': 'ile to 5Σi=3(i+1)',
+			'answer': 'skibiditoilet jest zawsze odpowiedzią',
+			'time':10,
+			'show_done': True,
+			'show_answer': True,
+			'show_user_answer': True
+			}
+
 @app.get("/")
 def home():
 	# Zwrot głównego pliku HTML
@@ -39,17 +52,28 @@ def get_info():
 def nauka_gra():
 	location = get_path('nauka_gra.html')
 	return FileResponse(location)
+	
+@app.post('/nauka/api/gra')
+def kolejny_test(data: dict):
+	print(data)
 
-@app.get('/backend-status')
-def testowy_status():
-	global show
-	show = not show
-	return show
-	
-@app.post('/api/data')
-def kolejny_test():
-	return
-	
+	updated_dict: dict = {'element_list': {
+										'example_name':2137,
+										'example_name2':7312
+									   },
+						'points': 666,
+						'max_points': 1234,
+						'question': 'ile to 5Σi=3(i+1)',
+						'answer': 'skibiditoilet jest zawsze odpowiedzią',
+						'time':10,
+						'show_done': True,
+						'show_answer': True,
+						'show_user_answer': True
+						}
+	return updated_dict
+
+#@app.get('/nauka/api/get_data')
+
 
 if __name__ == "__main__":
 	import uvicorn

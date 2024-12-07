@@ -1,69 +1,94 @@
-
-window.onload = function() {
-	// Pobranie parametrów z URL
-	const urlParams = new URLSearchParams(window.location.search);
-
-	// Obiekt, który będzie przechowywał wszystkie parametry
-	let paramsList = [];
-
-	// Funkcja do konwersji wartości na boolean
-	function toBoolean(value) {
-	  if (value === "true") return true;
-	  if (value === "false") return false;
-	  return value; // Jeśli wartość nie jest "true" ani "false", zwróci ją taką, jaka jest
+// Klasa do zarządzania licznikiem
+class Timer {
+	constructor(updateCallback) {
+		this.time = 0; // Czas w dziesiątych częściach sekundy
+		this.interval = null; // ID interwału
+		this.updateCallback = updateCallback; // Funkcja aktualizacji widoku
+	}
+	// Rozpocznij licznik
+	start() {
+		if (this.interval) return; // Jeśli już działa, nie uruchamiaj ponownie
+		this.interval = setInterval(() => {
+			this.time += 1; // Dodaj 0.1 sekundy
+			this.update(); // Aktualizuj widok
+		}, 100);
 	}
 
-	// Iterowanie przez wszystkie parametry
-	urlParams.forEach((value, key) => {
-	  // Dekodowanie wartości, jeśli są zakodowane
-	  let decodedKey = decodeURIComponent(key);
-	  let decodedValue = decodeURIComponent(value);
+	// Zatrzymaj licznik
+	pause() {
+		clearInterval(this.interval);
+		this.interval = null;
+	}
 
-	  // Przekonwertowanie wartości na boolean, jeśli to możliwe
-	  let finalValue = toBoolean(decodedValue);
+	// Ustaw licznik na określoną wartość
+	set(timeInSeconds) {
+		this.time = Math.round(timeInSeconds * 10); // Konwertuj sekundy na dziesiąte części sekundy
+		this.update();
+	}
 
-	  // Dodanie do listy jako obiekt
-	  paramsList.push({ key: decodedKey, value: finalValue });
+	// Zwróć czas w formacie sekundowym z dokładnością do 0.1 sekundy
+	getTime() {
+		return (this.time / 10).toFixed(1);
+	}
 
-	  // Możesz również wyświetlić je w konsoli
-	  console.log(decodedKey + ": " + finalValue);
-	});
-
-	// Wyświetlanie wyników na stronie
-	let output = '<ul>';
-	paramsList.forEach(param => {
-	  output += `<li><strong>${param.key}:</strong> ${param.value}</li>`;
-	});
-	output += '</ul>';
-	document.getElementById('output').innerHTML = output;
-  }
-
-async function checkBackendVariable() {
-	try {
-		// Symulacja żądania do backendu
-		const response = await fetch('/backend-status'); // Ustaw swój endpoint
-		const data = await response.json();
-
-		// Zmienna sterująca
-		const showElement = data.showElement;
-
-		// Wyświetl/ukryj element na podstawie zmiennej
-		const element = document.getElementById('dynamicElement');
-		element.style.display = showElement ? 'block' : 'none';
-	} catch (error) {
-		console.error('Error fetching backend variable:', error);
+	// Aktualizuj widok
+	update() {
+		if (this.updateCallback) {
+			this.updateCallback(this.getTime());
+		}
 	}
 }
 
-// Sprawdzaj wartość co 2 sekundy
-setInterval(checkBackendVariable, 2000);
+// Funkcja aktualizacji wyświetlania w HTML
+const displayElement = document.getElementById('timer');
 
-function handleClick() {
-	fetch('/api/data', {
-		method: 'POST', // Możesz użyć 'GET', 'PUT', 'DELETE' itp.
-		headers: {
-		  'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ key: true }) // Dane wysyłane w żądaniu
-	  })
-  }
+const timer = new Timer((time) => {
+	displayElement.textContent = `Czas: ${time}s`; // Zaktualizuj tekst w elemencie
+});
+
+// Przykład: start licznika
+timer.start(); // Rozpocznij licznik
+
+// Przykładowe działania: zatrzymanie po 5 sekundach, ustawienie na 10.5 s, ponowne uruchomienie
+setTimeout(() => {
+	timer.pause(); // Zatrzymaj licznik po 5 sekundach
+	timer.set(10.5); // Ustaw czas na 10.5 sekundy
+	timer.start(); // Rozpocznij licznik od nowej wartości
+}, 5000); // Po 5 sekundach
+
+function answer(show, text) {
+	console.log('gówno')
+	const element = document.getElementById('answer');
+	if (show) {
+		element.classList.add('visible');
+		element.classList.remove('hidden');
+	  } else {
+		element.classList.add('hidden');
+		element.classList.remove('visible');
+	  }
+	element.textContent = text
+}
+
+function question(text) {
+	const element = document.getElementById('question');
+	element.textContent = text
+}
+
+function points(number) {
+	const element = document.getElementById('points');
+	element.textContent = 'punkty: ' + number
+}
+
+function max_points(number) {
+	const element = document.getElementById('max_points');
+	element.textContent = 'Najwięcej punktów: ' + number
+}
+
+function init() {
+	answer(true, 'test')
+	question('testowe pytanie')
+	points(3)
+	max_points(5)
+}
+
+document.addEventListener('DOMContentLoaded', init);

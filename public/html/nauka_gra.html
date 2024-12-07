@@ -1,30 +1,32 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Odczyt parametrów URL</title>
-  <script src="/static/js/script_nauka_gra.js"></script>
-  <style>
-        #dynamicElement {
-                display: none;
-                padding: 20px;
-                background-color: #4caf50;
-                color: white;
-                text-align: center;
-                border-radius: 8px;
-        }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gra - UI</title>
+    <link rel="stylesheet" href="/static/css/nauka_gra.css">
 </head>
 <body>
-  <h1>Odczyt parametrów URL</h1>
-  <div id="output"></div>
-  <h1>Dynamic Element Visibility</h1>
-  <div id="dynamicElement">This element is visible!</div>
-  <script src="/static/js/script_nauka_gra.js"></script>
-  <form action="/api/data" method="POST">
-        <input type="hidden" name="key" value="true"> <!-- Ukryte dane do wysłania -->
-        <button type="submit">Wyślij dane</button>
-  </form>
+    <!-- Wyświetlanie licznika -->
+    <div id="timer" class="timer">Czas: 0.0s</div>
+
+    <div class="info">
+        <div id="points" class="points">Punkty: 0</div>
+        <div id="max_points" class="max-points">Najwięcej punktów: 0</div>
+    </div>
+
+    <div id="question" class="question">Pytanie pojawi się tutaj</div>
+
+    <div id="chances" class="chances">Szanse: brak danych</div>
+
+    <div id="answer" class="answer">Odpowiedź: (nie pokazano)</div>
+    
+    <div class="buttons">
+        <button id="done_button" class="button done">Gotowe</button>
+        <button id="button_wrong" class="button wrong">Źle</button>
+        <button id="button_correct" class="button correct">Dobrze</button>
+    </div>
+
+    <script src="/static/js/script_nauka_gra.js"></script>
 </body>
 </html>
