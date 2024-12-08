@@ -15,22 +15,6 @@ app: FastAPI = FastAPI()
 # Montujemy katalog public, żeby obsługiwać statyczne pliki (JS, CSS)
 app.mount("/static", StaticFiles(directory="public"), name="public")
 
-
-global game
-game: dict = {'element_list': {
-								'example_name':2137,
-								'example_name2':7312
-							   },
-			'points': 666,
-			'max_points': 1234,
-			'question': 'ile to 5Σi=3(i+1)',
-			'answer': 'skibiditoilet jest zawsze odpowiedzią',
-			'time':10,
-			'show_done': True,
-			'show_answer': True,
-			'show_user_answer': True
-			}
-
 @app.get("/")
 def home():
 	# Zwrot głównego pliku HTML
@@ -75,14 +59,12 @@ def kolejny_test(data: dict):
 @app.get('/nauka/init')
 def nauka_init():
 	updated_dict: dict = {'element_list': {
-										'example_name':2137,
+										'example_name':213774872334,
 										'example_name2':7312
 									   },
-						'points': 666,
 						'max_points': 1234,
 						'question': 'ile to 5Σi=3(i+1)',
-						'answer': 'skibiditoilet jest zawsze odpowiedzią',
-						'time':10,
+						'answer': 'skibiditoilet nie jest zawsze odpowiedzią',
 						'show_done': True,
 						'show_answer': True,
 						'show_user_answer': True

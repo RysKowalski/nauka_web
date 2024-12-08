@@ -6,7 +6,7 @@ class Timer {
 	}
 	// Rozpocznij licznik
 	start() {
-		console.log('started timer in')
+		console.log('started timer in');
 		if (this.interval) return; // Jeśli już działa, nie uruchamiaj ponownie
 		this.interval = setInterval(() => {
 			this.time += 1; // Dodaj 0.1 sekundy
@@ -34,7 +34,7 @@ class Timer {
 	// Aktualizuj widok
 	update() {
 		const element = document.getElementById('timer');
-		element.textContent = this.getTime() + 's'
+		element.textContent = this.getTime() + 's';
 	}
 }
 
@@ -43,125 +43,117 @@ function answer(show, text) {
 	if (show) {
 		element.classList.add('visible');
 		element.classList.remove('hidden');
-	  } else {
+	} else {
 		element.classList.add('hidden');
 		element.classList.remove('visible');
-	  }
-	element.textContent = text
+	}
+	element.textContent = text;
 }
 
 function question(text) {
 	const element = document.getElementById('question');
-	element.textContent = text
+	element.textContent = text;
 }
 
 function points(number) {
 	const element = document.getElementById('points');
-	element.textContent = 'punkty: ' + number
+	element.textContent = 'punkty: ' + number;
 }
 
 function max_points(number) {
 	const element = document.getElementById('max_points');
-	element.textContent = 'Najwięcej punktów: ' + number
+	element.textContent = 'Najwięcej punktów: ' + number;
 }
 
 function done_button(show) {
-	const element = document.getElementById('done_button')
+	const element = document.getElementById('done_button');
 	if (show) {
 		element.classList.add('visible');
 		element.classList.remove('hidden');
-	  } else {
+	} else {
 		element.classList.add('hidden');
 		element.classList.remove('visible');
-	  }
+	}
 }
 
 function user_choice_buttons(show) {
-	const element = document.getElementById('button_wrong')
-	const element2 = document.getElementById('button_correct')
+	const element = document.getElementById('button_wrong');
+	const element2 = document.getElementById('button_correct');
 	if (show) {
 		element.classList.add('visible');
 		element.classList.remove('hidden');
 		element2.classList.add('visible');
 		element2.classList.remove('hidden');
-	  } else {
+	} else {
 		element.classList.add('hidden');
 		element.classList.remove('visible');
 		element2.classList.add('hidden');
 		element2.classList.remove('visible');
-	  }
+	}
 }
 
 function updateChances(data) {
-	// Get the DOM element where the list will be displayed
 	const chancesElement = document.getElementById('chances');
-
-	// Clear the existing content of the element
 	chancesElement.innerHTML = '';
-
-	// Create a list element
 	const list = document.createElement('ul');
-
-	// Iterate through the dictionary and add list items
 	for (const [key, value] of Object.entries(data)) {
 		const listItem = document.createElement('li');
 		listItem.textContent = `${key}: ${value}`;
 		list.appendChild(listItem);
 	}
-
-	// Append the list to the chances element
 	chancesElement.appendChild(list);
 }
 
 async function sendRequest(data, method, url) {
 	try {
-		if (method = 'GET') {
-			const response = await fetch(url, {
-				method: 'GET'
-				});
-
-				// Sprawdzanie, czy odpowiedź jest w porządku
-				if (!response.ok) {
-					throw new Error(`HTTP error! Status: ${response.status}`);
-				}
-
-				// Odczytanie odpowiedzi w formacie JSON
-				const jsonResponse = await response.json();
-
-				// Zwrócenie odpowiedzi lub dalsze przetwarzanie
-				console.log('Odpowiedź z serwera:', jsonResponse);
-
-				return jsonResponse;
-		} else { const response = await fetch(url, {
-				method: 'POST', // Typ żądania
-				headers: {
-					'Content-Type': 'application/json' // Typ treści
-				},
-				body: JSON.stringify(data) // Konwersja danych na format JSON
-				});
-
-				// Sprawdzanie, czy odpowiedź jest w porządku
-				if (!response.ok) {
-					throw new Error(`HTTP error! Status: ${response.status}`);
-				}
-
-				// Odczytanie odpowiedzi w formacie JSON
-				const jsonResponse = await response.json();
-
-				// Zwrócenie odpowiedzi lub dalsze przetwarzanie
-				console.log('Odpowiedź z serwera:', jsonResponse);
-
-				return jsonResponse;
-			}
-		} catch (error) {
-			console.error('Błąd podczas wysyłania żądania:', error);
+		const options = {
+			method,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		};
+		if (method === 'POST') options.body = JSON.stringify(data);
+		const response = await fetch(url, options);
+		if (!response.ok) {
+			throw new Error(`HTTP error! Status: ${response.status}`);
+		}
+		const jsonResponse = await response.json();
+		console.log('Odpowiedź z serwera:', jsonResponse);
+		return jsonResponse;
+	} catch (error) {
+		console.error('Błąd podczas wysyłania żądania:', error);
+		throw error;
 	}
-
 }
 
-function init() {
-	data = sendRequest('', 'GET', '/nauka/init')
-	console.log(data)
+function showError(message) {
+	const errorElement = document.getElementById('error');
+	errorElement.textContent = message;
+	errorElement.classList.add('visible');
+}
+
+async function init() {
+	try {
+		points(0);
+		max_points(0);
+		question('Brak pytania')
+		answer(false, 'odpowiedź nie załadowana')
+		updateChances({'brak': 0})
+		done_button(true)
+		user_choice_buttons(false)
+		const data = await sendRequest('', 'GET', '/nauka/init');
+		if (data) {
+			max_points(data.max_points);
+			question(data.question)
+			answer(data.show_answer, data.answer)
+			updateChances(data.element_list)
+		}
+	} catch (error) {
+		console.error('Błąd inicjalizacji:', error);
+		showError('Nie udało się załadować danych początkowych.');
+	}
 }
 
 document.addEventListener('DOMContentLoaded', init);
+const timer = new Timer();
+timer.start();
