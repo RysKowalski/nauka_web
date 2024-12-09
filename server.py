@@ -4,6 +4,8 @@ from fastapi.staticfiles import StaticFiles
 
 import os
 
+import backend
+
 def get_path(name: str) -> str:
 	# Upewniamy się, że ścieżka do katalogu "public/html" jest poprawna
 	return os.path.join('public', 'html', name)
