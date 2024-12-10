@@ -82,11 +82,13 @@ function user_choice_buttons(show) {
 	if (show) {
 		element.classList.add('visible');
 		element.classList.remove('hidden');
+		
 		element2.classList.add('visible');
 		element2.classList.remove('hidden');
 	} else {
 		element.classList.add('hidden');
 		element.classList.remove('visible');
+		
 		element2.classList.add('hidden');
 		element2.classList.remove('visible');
 	}
@@ -126,10 +128,22 @@ async function sendRequest(data, method, url) {
 	}
 }
 
-function showError(message) {
-	const errorElement = document.getElementById('error');
-	errorElement.textContent = message;
-	errorElement.classList.add('visible');
+function getTrueArguments() {
+    // Pobierz aktualny URL
+    const url = new URL(window.location.href);
+
+    // Odczytaj parametry zapytania
+    const params = new URLSearchParams(url.search);
+
+    // Zwróć listę kluczy, które mają wartość 'true'
+    const trueArguments = [];
+    params.forEach((value, key) => {
+        if (value === 'true') {
+            trueArguments.push(key);
+        }
+    });
+
+    return trueArguments;
 }
 
 async function init() {
@@ -141,7 +155,7 @@ async function init() {
 		updateChances({'brak': 0})
 		done_button(true)
 		user_choice_buttons(false)
-		const data = await sendRequest('', 'GET', '/nauka/init');
+		const data = await sendRequest(getTrueArguments(), 'POST', '/nauka/init');
 		if (data) {
 			max_points(data.max_points);
 			question(data.question)
