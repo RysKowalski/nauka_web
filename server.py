@@ -58,8 +58,9 @@ def kolejny_test(data: dict):
 						}
 	return updated_dict
 
-@app.get('/nauka/init')
-def nauka_init():
+@app.post('/nauka/init')
+def nauka_init(chances: list[str]):
+	print(chances)
 	updated_dict: dict = {'element_list': {
 										'example_name':213774872334,
 										'example_name2':7312
