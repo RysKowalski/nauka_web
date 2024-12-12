@@ -20,6 +20,9 @@ class Instances:
 		new_data: dict = self.instances[id].action(endtime, odpowiedz)
 		return new_data
 
+def add_user(name: str) -> None:
+	...
+
 if __name__ == '__main__':
 	instances: Instances = Instances()
 	

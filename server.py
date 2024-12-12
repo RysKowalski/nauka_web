@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 
 import backend
+import backend.gra
 
 def get_path(name: str) -> str:
 	# Upewniamy się, że ścieżka do katalogu "public/html" jest poprawna
@@ -49,7 +50,7 @@ def kolejny_test(data: dict):
 									   },
 						'points': 666,
 						'max_points': 1234,
-						'question': 'ile to 5Σi=3(i+1)',
+						'question': 'ile to 5Σdi=3(i+1)',
 						'answer': 'skibiditoilet jest zawsze odpowiedzią',
 						'time':10,
 						'show_done': True,
