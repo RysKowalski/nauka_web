@@ -169,5 +169,12 @@ async function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+// Wykrywanie zamknięcia lub przeładowania karty
+window.addEventListener('beforeunload', (event) => {
+    // Wysyłanie żądania do serwera, informując o zamknięciu karty
+    navigator.sendBeacon('/nauka/close_window');
+});
+
 const timer = new Timer();
 timer.start();
