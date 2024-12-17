@@ -1,33 +1,44 @@
 from typing import Self
+import os
+import yaml
 
 class Game:
-	def __init__(self: Self, elements: list[str]) -> None:
-		...
-	
-	def action(self: Self, endtime: int, odpowiedz: bool) -> dict:
-		return {}
+	def __init__(self: Self, elements: list[str], name: str) -> None:
+		with open(os.path.join('data', 'nauka_user_data.yaml'), 'r') as plik:
+			user_data: dict = yaml.safe_load(plik)[name]
+		
+		if '|'.join(elements) in user_data['points']:
+			self.max_points: int = user_data['points']['|'.join(elements)]['max_points']
+			
+			self.chances: list[str] = user_data['points']['|'.join(elements)]['chances']
+			
+		else:
+			print('nie ma')
+			
+		self.points: int = 0
+		
+		
+		with 
+		self.names: list[str] = 
+		
+		print(f'{user_data = } \n')
+		print(f'{self.max_points = } \n')
+		print(f'{self.chances = } \n')
+		
 
 class Instances:
 	def __init__(self: Self) -> None:
 		self.instances: dict[int, Game] = {}
 	
-	def new_instance(self: Self, id: int, elements: list[str]) -> None:
-		new_instance: Game = Game(elements)
-		self.instances[id] = new_instance
+	def new_instance(self: Self, name: str, elements: list[str]) -> None:
+		new_instance: Game = Game(elements, name)
+		self.instances[name] = new_instance
 
-	def update_instance(self: Self, id: int, endtime: int, odpowiedz: bool) -> dict:
-		
-		new_data: dict = self.instances[id].action(endtime, odpowiedz)
-		return new_data
-
-def add_user(name: str) -> None:
-	...
 
 if __name__ == '__main__':
 	instances: Instances = Instances()
 	
-	instances.new_instance(4, ['test1', 'test2'])
+	instances.new_instance('example_user', ['example', 'question'])
 	
-	data: dict = instances.update_instance(4, 30000, True)
-
-	print(instances.instances, '\n\n\n\n', data)
+	print(instances.instances)
+	
