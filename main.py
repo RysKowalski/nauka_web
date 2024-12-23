@@ -1,34 +1,44 @@
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.responses import JSONResponse
+from fastapi.security.api_key import APIKeyHeader
 import os
 import sys
 import requests
-import subprocess
-import uvicorn
-from typing import Any, Dict, List
+import shutil
+from dotenv import load_dotenv
+from typing import Any
 
-from server import router
+#from server import router
 
 app = FastAPI()
-app.include_router(router)
+#app.include_router(router)
 
 PORT: int = 3000
 
+load_dotenv()
+
 # Konfiguracja
-AUTHORIZED_IP: str = "127.0.0.1"  # Adres IP, który może uzyskać dostęp do endpointu
+AUTHORIZED_API_KEY = os.getenv("AUTHORIZED_API_KEY")  # Klucz API, który umożliwia dostęp
 VERSION_URL: str = "https://raw.githubusercontent.com/RysKowalski/updates/refs/heads/main/version.txt"  # URL pliku z wersją
 UPDATE_URL: str = "https://raw.githubusercontent.com/RysKowalski/updates/refs/heads/main/update.json"  # URL pliku JSON z instrukcjami aktualizacji
 LOCAL_VERSION_FILE: str = "local_version.txt"  # Lokalny plik z wersją
 
-@app.middleware("http")
-async def verify_ip(request, call_next: Any) -> JSONResponse:
-    client_ip: str = request.client.host
-    if client_ip != AUTHORIZED_IP:
-        return JSONResponse(status_code=403, content={"detail": "Access forbidden"})
-    return await call_next(request)
+# Nagłówek API Key
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+# Funkcja do weryfikacji API Key
+def verify_api_key(api_key: str = Depends(api_key_header)):
+    if api_key != AUTHORIZED_API_KEY:
+        raise HTTPException(status_code=403, detail="Access forbidden: Invalid API Key")
+    return api_key
+
+def restart_application() -> None:
+    """Funkcja restartująca aplikację."""
+    python: str = sys.executable
+    os.execl(python, python, *sys.argv)
 
 @app.get("/update")
-async def update_endpoint() -> Dict[str, Any]:
+async def update_endpoint(api_key: str = Depends(verify_api_key)) -> dict[str, Any]:
     # Pobierz najnowszą wersję z pliku online
     try:
         latest_version: str = requests.get(VERSION_URL).text.strip()
@@ -50,38 +60,42 @@ async def update_endpoint() -> Dict[str, Any]:
 
     # Pobierz plik JSON z instrukcjami
     try:
-        update_instructions: Dict[str, list[dict[str, str]]] = requests.get(UPDATE_URL).json()
+        update_instructions: dict[str, list[dict[str, str]]] = requests.get(UPDATE_URL).json()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch update instructions: {e}")
 
     # Przetwarzanie instrukcji aktualizacji
     for instruction in update_instructions.get("instructions", []):
-        action: str = instruction.get("action", "") # instrukcja do wykonania
-        target: str = instruction.get("target", "") # plik do wykonania instrukcji
-        source: str = instruction.get("source", "") # link do pobrania pliku
-        destination: str = instruction.get("destination",  "") # ścieżka do zapisania pliku / nazwa pliku
+        print(instruction)
+        action: str = instruction.get("action", "")  # instrukcja do wykonania
+        target: str = instruction.get("target", "")  # plik do wykonania instrukcji
+        source: str = instruction.get("source", "")  # link do pobrania pliku
+        destination: str = instruction.get("destination", "")  # ścieżka do zapisania pliku / nazwa pliku
 
         try:
-            if action == "delete": # instrukcja usuwająca plik target
+            if action == "delete":  # instrukcja usuwająca plik lub folder target
                 if os.path.exists(target):
-                    os.remove(target)
-                    
-            elif action == "download": # instrukcja pobierająca plik source, zapisując go do pliku destination
+                    if os.path.isfile(target):  # Jeśli target jest plikiem
+                        os.remove(target)
+                    elif os.path.isdir(target):  # Jeśli target jest katalogiem
+                        shutil.rmtree(target)  # Usuwa katalog wraz z zawartością
+
+            elif action == "download":  # instrukcja pobierająca plik source, zapisując go do pliku destination
                 file_content: bytes = requests.get(source).content
                 with open(destination, "wb") as f:
                     f.write(file_content)
-                    
-            elif action == "rename": # instrukcja zmieniająca nazwę pliku target na destination
+
+            elif action == "move":  # porusza plik target do destination
                 if os.path.exists(target):
                     os.rename(target, destination)
-                    
-            elif action == "move": # porusza plik target do destination
-                if os.path.exists(target):
-                    os.replace(target, destination)
-                    
-            elif action == "execute": # włącza plik target przez python
+
+            elif action == "execute":  # włącza plik target przez python
                 if os.path.exists(target):
                     os.system(f'python ./{target}')
+
+            elif action == "create_folder":  # tworzy folder o ścieżce destination
+                if not os.path.exists(destination):
+                    os.makedirs(destination)
 
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error during update action '{action}': {e}")
@@ -90,10 +104,6 @@ async def update_endpoint() -> Dict[str, Any]:
     restart_application()
     return {"detail": "Update completed, restarting..."}
 
-def restart_application() -> None:
-    """Funkcja restartująca aplikację."""
-    python: str = sys.executable
-    os.execl(python, python, *sys.argv)
-
 if __name__ == "__main__":
+    import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=PORT)
