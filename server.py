@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -11,34 +11,34 @@ def get_path(name: str) -> str:
 	# Upewniamy się, że ścieżka do katalogu "public/html" jest poprawna
 	return os.path.join('public', 'html', name)
 
-router: APIRouter = APIRouter()
+app: FastAPI = FastAPI()
 
 # Montujemy katalog public, żeby obsługiwać statyczne pliki (JS, CSS)
-router.mount("/static", StaticFiles(directory="public"), name="public")
+app.mount("/static", StaticFiles(directory="public"), name="public")
 
-@router.get("/")
+@app.get("/")
 def home():
 	# Zwrot głównego pliku HTML
 	location = get_path('index.html')
 	return FileResponse(location)
 
-@router.get("/nauka/wybieranie")
+@app.get("/nauka/wybieranie")
 def nauka_wybieranie():
 	# Zwrot pliku HTML dla nauka/wybieranie
 	location = get_path('nauka_wybieranie.html')
 	return FileResponse(location)
 
-@router.get("/nauka/api/data")
+@app.get("/nauka/api/data")
 def get_info():
 	# Zwrot pliku JSON
 	return FileResponse(os.path.join('data', 'dane_nauka.json'))
 	
-@router.get("/nauka/gra")
+@app.get("/nauka/gra")
 def nauka_gra():
 	location = get_path('nauka_gra.html')
 	return FileResponse(location)
-	
-@router.post('/nauka/api/gra')
+
+@app.post('/nauka/api/gra')
 def kolejny_test(data: dict):
 	print(data)
 
@@ -57,7 +57,7 @@ def kolejny_test(data: dict):
 						}
 	return updated_dict
 
-@router.post('/nauka/init')
+@app.post('/nauka/init')
 def nauka_init(chances: list[str]):
 	print(chances)
 	updated_dict: dict = {'element_list': {
@@ -78,4 +78,4 @@ if __name__ == "__main__":
 
 	PORT: int = 3000
 
-	uvicorn.run(router, host="127.0.0.1", port=PORT)
+	uvicorn.run(app, host="127.0.0.1", port=PORT)
