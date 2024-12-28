@@ -69,6 +69,8 @@ function redirectToGame() {
 		params.append(key, status[key]);
 	});
 
+	params.append("user", document.querySelector('.user').value);
+
 	// Przekierowanie na stronę /nauka/gra z parametrami
 	window.location.href = `/nauka/gra?${params.toString()}`;
 }

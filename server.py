@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from typing import Dict
+
 import os
 
 import backend
@@ -31,7 +33,7 @@ def nauka_wybieranie():
 @app.get("/nauka/api/data")
 def get_info():
 	# Zwrot pliku JSON
-	return FileResponse(os.path.join('data', 'dane_nauka.json'))
+	return FileResponse(os.path.join('backend', 'data', 'nauka_questions.json'))
 	
 @app.get("/nauka/gra")
 def nauka_gra():
@@ -42,7 +44,7 @@ def nauka_gra():
 def kolejny_test(data: dict):
 	print(data)
 
-	updated_dict: dict = {'element_list': {
+	updated_dict: Dict[str, dict | int | str | bool] = {'element_list': {
 										'example_name':2137,
 										'example_name2':7312
 									   },

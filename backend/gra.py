@@ -32,7 +32,6 @@ class Game:
 		print(f'{self.chances = } \n')
 		print(f'{self.questions = } \n')
 		print(f'{self.answers = } \n')
-		
 
 class Instances:
 	def __init__(self: Self) -> None:
