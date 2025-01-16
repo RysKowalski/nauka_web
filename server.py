@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from typing import Dict
+import json
 
 import os
 
@@ -39,6 +40,12 @@ def get_info():
 def nauka_gra():
 	location = get_path('nauka_gra.html')
 	return FileResponse(location)
+
+@app.post("/nauka/user_exist")
+def user_exist(user: dict):
+	print(user)
+	with open(os.path.join("backend", "data", "nauka_user_data.json"), "r") as plik:
+		return user["user"] in json.load(plik)
 
 @app.post('/nauka/api/gra')
 def kolejny_test(data: dict):

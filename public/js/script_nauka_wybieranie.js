@@ -75,6 +75,32 @@ function redirectToGame() {
 	window.location.href = `/nauka/gra?${params.toString()}`;
 }
 
+function user_exist() {
+	return sendRequest({user: document.querySelector('.user').value}, "POST", "/nauka/user_exist")
+}
+
+async function sendRequest(data, method, url) {
+	try {
+		const options = {
+			method,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		};
+		if (method === 'POST') options.body = JSON.stringify(data);
+		const response = await fetch(url, options);
+		if (!response.ok) {
+			throw new Error(`HTTP error! Status: ${response.status}`);
+		}
+		const jsonResponse = await response.json();
+		console.log('Odpowiedź z serwera:', jsonResponse);
+		return jsonResponse;
+	} catch (error) {
+		console.error('Błąd podczas wysyłania żądania:', error);
+		throw error;
+	}
+}
+
 // Wywołanie funkcji po załadowaniu dokumentu
 document.addEventListener('DOMContentLoaded', loadCheckboxes);
 
