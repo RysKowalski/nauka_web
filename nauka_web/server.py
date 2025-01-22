@@ -8,26 +8,26 @@ import json
 import os
 
 def get_path(name: str) -> str:
-	# Upewniamy się, że ścieżka do katalogu "public/html" jest poprawna
-	return os.path.join('public', 'html', name)
+	os.system("ls")
+	return os.path.join("nauka_web", "public", name, name + ".html")
 
 router: APIRouter = APIRouter()
 
 @router.get("/")
 def home():
 	# Zwrot głównego pliku HTML
-	location = get_path('index.html')
+	location = get_path('index')
 	return FileResponse(location)
 
 @router.get("/nauka/wybieranie")
 def nauka_wybieranie():
 	# Zwrot pliku HTML dla nauka/wybieranie
-	location = get_path('nauka_wybieranie.html')
+	location = get_path('nauka_wybieranie')
 	return FileResponse(location)
 	
 @router.get("/nauka/gra")
 def nauka_gra():
-	location = get_path('nauka_gra.html')
+	location = get_path('nauka_gra')
 	return FileResponse(location)
 
 if __name__ == "__main__":

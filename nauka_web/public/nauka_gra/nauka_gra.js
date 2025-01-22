@@ -128,7 +128,7 @@ async function sendRequest(data, method, url) {
 	}
 }
 
-function getTrueArguments() {
+function get_arguments() {
     // Pobierz aktualny URL
     const url = new URL(window.location.href);
 
@@ -143,8 +143,16 @@ function getTrueArguments() {
         }
     });
 
-    return trueArguments;
+    // Pobierz parametr 'user' (jeśli istnieje)
+    const user = [params.get("user")];
+
+    // Zwróć obiekt z wynikami
+    return {
+        chances: trueArguments,
+        user: user
+    };
 }
+
 
 async function init() {
 	try {
@@ -155,7 +163,7 @@ async function init() {
 		updateChances({'brak': 0})
 		done_button(true)
 		user_choice_buttons(false)
-		const data = await sendRequest(getTrueArguments(), 'POST', '/nauka/init');
+		const data = await sendRequest(get_arguments(), 'POST', '/api/nauka/init');
 		if (data) {
 			max_points(data.max_points);
 			question(data.question)
@@ -169,12 +177,6 @@ async function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
-
-// Wykrywanie zamknięcia lub przeładowania karty
-window.addEventListener('beforeunload', (event) => {
-    // Wysyłanie żądania do serwera, informując o zamknięciu karty
-    navigator.sendBeacon('/nauka/close_window');
-});
 
 const timer = new Timer();
 timer.start();

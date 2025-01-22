@@ -1,7 +1,7 @@
 // Funkcja ładująca dane z API i generująca checkboxy
 async function loadCheckboxes() {
 	try {
-	  const response = await fetch('/nauka/api/data');
+	  const response = await fetch('/api/nauka/data');
 	  if (!response.ok) {
 		throw new Error(`Błąd HTTP: ${response.status}`);
 	  }
@@ -76,7 +76,7 @@ function redirectToGame() {
 }
 
 function user_exist() {
-	return sendRequest({user: document.querySelector('.user').value}, "POST", "/nauka/user_exist")
+	return sendRequest({user: document.querySelector('.user').value}, "POST", "/api/nauka/user_exist")
 }
 
 async function sendRequest(data, method, url) {

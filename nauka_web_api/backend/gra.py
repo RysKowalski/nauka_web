@@ -4,7 +4,7 @@ import yaml
 
 class Game:
 	def __init__(self: Self, elements: list[str], name: str) -> None:
-		with open(os.path.join('data', 'nauka_user_data.yaml'), 'r') as plik:
+		with open(os.path.join('./nauka_web_api', 'backend', 'data', 'nauka_user_data.json'), 'r') as plik:
 			user_data: dict = yaml.safe_load(plik)[name]
 		
 		if '|'.join(elements) in user_data['points']:
@@ -20,7 +20,7 @@ class Game:
 		self.questions: list[str] = []
 		self.answers: list[str] = []
 
-		with open(os.path.join('data', 'nauka_questions.yaml')) as plik:
+		with open(os.path.join('./nauka_web_api', 'backend', 'data', 'nauka_questions.json')) as plik:
 			questions: dict = yaml.safe_load(plik)
 			for element in elements:
 				self.questions.append(questions[element]['names'])

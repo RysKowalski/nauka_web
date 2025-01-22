@@ -1,5 +1,5 @@
 {
-  "prawa": {
+  "example": {
     "data": [
       "Mam szczerą wolę, całym życiem pełnić służbę bogu i Polsce, nieść chętną pomoc bliźnim i być posłusznym prawu harcerskiemu.",
       "1. Harcerz służy Bogu i Polsce i sumiennie spełnia swoje obowiązki.",
@@ -27,7 +27,7 @@
       "10"
     ]
   },
-  "sznury_choragwia": {
+  "question": {
     "data": [
       "brązowy spod ramienia",
       "zielony spod ramienia",

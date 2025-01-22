@@ -4,22 +4,24 @@ from fastapi.responses import FileResponse
 import os
 import json
 
-from typing import Dict
+from typing import Dict, Union, List
+
+from nauka_web_api.backend import gra
 
 router: APIRouter = APIRouter()
 
-@router.get("/nauka/data")
+@router.get("/api/nauka/data")
 def get_info():
 	# Zwrot pliku JSON
-	return FileResponse(os.path.join('backend', 'data', 'nauka_questions.json'))
+	return FileResponse(os.path.join('nauka_web_api', 'backend', 'data', 'nauka_questions.json'))
 
-@router.post("/nauka/user_exist")
+@router.post("/api/nauka/user_exist")
 def user_exist(user: dict):
 	print(user)
-	with open(os.path.join("backend", "data", "nauka_user_data.json"), "r") as plik:
+	with open(os.path.join('nauka_web_api', "backend", "data", "nauka_user_data.json"), "r") as plik:
 		return user["user"] in json.load(plik)
 
-@router.post('/nauka/gra')
+@router.post('/api/nauka/gra')
 def kolejny_test(data: dict):
 	print(data)
 
@@ -38,9 +40,11 @@ def kolejny_test(data: dict):
 						}
 	return updated_dict
 
-@router.post('/nauka/init')
-def nauka_init(chances: list[str]):
-	print(chances)
+@router.post('/api/nauka/init')
+def nauka_init(data: Dict[str, List[str]]):
+	print(data)
+	instancje_gry.new_instance(data["user"][0], data["chances"])
+
 	updated_dict: dict = {'element_list': {
 										'example_name':213774872334,
 										'example_name2':7312
@@ -53,6 +57,8 @@ def nauka_init(chances: list[str]):
 						'show_user_answer': True
 						}
 	return updated_dict
+
+instancje_gry: gra.Instances = gra.Instances()
 
 if __name__ == "__main__":
 	import uvicorn
