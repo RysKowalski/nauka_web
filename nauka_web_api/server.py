@@ -42,8 +42,11 @@ def kolejny_test(data: dict):
 
 @router.post('/api/nauka/init')
 def nauka_init(data: Dict[str, List[str]]):
+	user: str = data["user"][0]
+	chances: list[str] = data["chances"]
+
 	print(data)
-	instancje_gry.new_instance(data["user"][0], data["chances"])
+	instancje_gry.new_instance(user, chances)
 
 	updated_dict: dict = {'element_list': {
 										'example_name':213774872334,
@@ -56,6 +59,8 @@ def nauka_init(data: Dict[str, List[str]]):
 						'show_answer': True,
 						'show_user_answer': True
 						}
+	
+	updated_dict = instancje_gry.instances[user].get_data()
 	return updated_dict
 
 instancje_gry: gra.Instances = gra.Instances()
