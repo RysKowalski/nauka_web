@@ -1,0 +1,42 @@
+{
+  "example_user": {
+    "points": {
+      "example|question": {
+        "max_points": 10,
+        "chances": [
+          1,
+          1,
+          245
+        ]
+      },
+      "example|question2": {
+        "max_points": 12,
+        "chances": [
+          20,
+          40,
+          87
+        ]
+      }
+    }
+  },
+  "example_user_2": {
+    "points": {
+      "example|question": {
+        "max_points": 14,
+        "chances": [
+          2,
+          7,
+          215
+        ]
+      },
+      "example|question2": {
+        "max_points": 22,
+        "chances": [
+          207,
+          401,
+          872
+        ]
+      }
+    }
+  }
+}
