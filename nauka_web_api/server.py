@@ -47,28 +47,27 @@ def nauka_init(data: Dict[str, List[str]]):
 
 	print(data)
 	instancje_gry.new_instance(user, chances)
-
-	updated_dict: dict = {'element_list': {
-										'example_name':213774872334,
-										'example_name2':7312
-									   },
-						'max_points': 1234,
-						'question': 'ile to 5Σi=3(i+1)',
-						'answer': 'skibiditoilet nie jest zawsze odpowiedzią',
-						'show_done': True,
-						'show_answer': True,
-						'show_user_answer': True
-						}
 	
-	updated_dict = instancje_gry.instances[user].get_data()
+	updated_dict: dict = instancje_gry.instances[user].get_data()
 	return updated_dict
+
+@router.post('/api/nauka/move')
+def nauka_move(data: dict) -> dict:
+	user: str = data['user']
+	answer_time: float = data['time']
+	answer: bool = data["answer"]
+
+	updated_dict: dict = instancje_gry.instances[user].move(answer, answer_time)
+
+	return updated_dict
+
+
 
 instancje_gry: gra.Instances = gra.Instances()
 
 if __name__ == "__main__":
+	PORT: int = 3001
 	import uvicorn
 
-	PORT: int = 3001
 
 	uvicorn.run(router, host="127.0.0.1", port=PORT)
-#
