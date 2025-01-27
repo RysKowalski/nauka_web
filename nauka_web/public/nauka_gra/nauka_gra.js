@@ -38,16 +38,17 @@ class Timer {
 	}
 }
 
-function answer(show, text) {
+function answer(show) {
 	const element = document.getElementById('answer');
 	if (show) {
+		element.textContent = answer_content;
 		element.classList.add('visible');
 		element.classList.remove('hidden');
 	} else {
 		element.classList.add('hidden');
 		element.classList.remove('visible');
 	}
-	element.textContent = text;
+	
 }
 
 function question(text) {
@@ -94,7 +95,7 @@ function user_choice_buttons(show) {
 	}
 }
 
-function updateChances(data) {
+function update_chances(data) {
 	const chancesElement = document.getElementById('chances');
 	chancesElement.innerHTML = '';
 	const list = document.createElement('ul');
@@ -153,30 +154,75 @@ function get_arguments() {
     };
 }
 
+function on_done_button() {
+	timer.pause()
+	done_button(false)
+	user_choice_buttons(true)
+	answer(true)
+
+}
+
+function on_user_correct() {
+	move(true)
+}
+
+function on_user_wrong() {
+	move(false)
+}
+
+async function move(user_answer) {
+	const user_time = timer.getTime()
+	const new_data = await sendRequest({'user': username, 'time': user_time, 'answer': user_answer}, 'POST', '/api/nauka/move')
+
+	points(new_data.points)
+	max_points(new_data.max_points)
+	question(new_data.question)
+	answer_content = new_data.answer
+	update_chances(new_data.chances)
+
+	answer(false)
+	user_choice_buttons(false)
+	done_button(true)
+	timer.set(0)
+	timer.start()
+
+	console.log(new_data)
+}
 
 async function init() {
 	try {
 		points(0);
 		max_points(0);
 		question('Brak pytania')
-		answer(false, 'odpowiedź nie załadowana')
-		updateChances({'brak': 0})
+		answer(false)
+		update_chances({'brak': 0})
 		done_button(true)
 		user_choice_buttons(false)
 		const data = await sendRequest(get_arguments(), 'POST', '/api/nauka/init');
 		if (data) {
 			max_points(data.max_points);
 			question(data.question)
-			answer(data.show_answer, data.answer)
-			updateChances(data.element_list)
+			update_chances(data.element_list)
+			answer_content = data.answer
 		}
+
+		const done_button_listener = document.getElementById('done_button')
+		done_button_listener.addEventListener('click', on_done_button)
+
+		const user_correct = document.getElementById('button_correct')
+		user_correct.addEventListener('click', on_user_correct)
+
+		const user_wrong = document.getElementById('button_wrong')
+		user_wrong.addEventListener('click', on_user_wrong)
 	} catch (error) {
 		console.error('Błąd inicjalizacji:', error);
 		showError('Nie udało się załadować danych początkowych.');
 	}
 }
-
-document.addEventListener('DOMContentLoaded', init);
-
 const timer = new Timer();
 timer.start();
+
+let answer_content = ''
+let username = get_arguments().user[0]
+
+document.addEventListener('DOMContentLoaded', init);

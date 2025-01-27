@@ -55,28 +55,57 @@ function areAnyCheckboxesChecked() {
 }
 
 // Funkcja przekierowująca na nową stronę z parametrami w URL
-function redirectToGame() {
+
+async function redirectToGame() {
+	// Sprawdzanie, czy zaznaczono przynajmniej jeden checkbox
 	if (!areAnyCheckboxesChecked()) {
 		alert('Musisz wybrać przynajmniej jeden checkbox!');
-		return; // Jeśli żaden checkbox nie jest zaznaczony, nie robimy nic
+		return;
 	}
 
-	const status = getCheckboxStatus();
-	const params = new URLSearchParams();
+	// Pobranie nazwy użytkownika z pola input
+	const user = document.querySelector('.user').value;
+	if (!user) {
+		alert('Nazwa użytkownika nie może być pusta!');
+		return;
+	}
 
-	// Dodaj status checkboxów jako parametry URL
-	Object.keys(status).forEach(key => {
-		params.append(key, status[key]);
-	});
+	try {
+		// Sprawdzenie, czy użytkownik istnieje
+		const userExists = await user_exist(user); // Użycie await
+		if (!userExists) {
+			alert('Nieprawidłowa nazwa użytkownika! Spróbuj ponownie.');
+			return;
+		}
 
-	params.append("user", document.querySelector('.user').value);
+		// Pobranie statusów checkboxów
+		const status = getCheckboxStatus();
+		const params = new URLSearchParams();
 
-	// Przekierowanie na stronę /nauka/gra z parametrami
-	window.location.href = `/nauka/gra?${params.toString()}`;
+		// Dodanie statusu checkboxów jako parametrów URL
+		Object.keys(status).forEach(key => {
+			params.append(key, status[key]);
+		});
+
+		params.append("user", user);
+
+		// Przekierowanie na stronę /nauka/gra z parametrami
+		window.location.href = `/nauka/gra?${params.toString()}`;
+	} catch (error) {
+		console.error('Błąd podczas sprawdzania użytkownika:', error);
+		alert('Wystąpił błąd. Spróbuj ponownie później.');
+	}
 }
 
-function user_exist() {
-	return sendRequest({user: document.querySelector('.user').value}, "POST", "/api/nauka/user_exist")
+async function user_exist(user) {
+	try {
+		// Wywołanie asynchronicznego żądania
+		const response = await sendRequest({ user }, "POST", "/api/nauka/user_exist");
+		return response.exists; // Oczekujemy odpowiedzi w formacie { exists: true/false }
+	} catch (error) {
+		console.error('Błąd podczas sprawdzania użytkownika:', error);
+		return false; // Jeśli wystąpił błąd, traktuj użytkownika jako nieistniejącego
+	}
 }
 
 async function sendRequest(data, method, url) {

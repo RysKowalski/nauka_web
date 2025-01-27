@@ -17,28 +17,10 @@ def get_info():
 
 @router.post("/api/nauka/user_exist")
 def user_exist(user: dict):
-	print(user)
-	with open(os.path.join('nauka_web_api', "backend", "data", "nauka_user_data.json"), "r") as plik:
-		return user["user"] in json.load(plik)
-
-@router.post('/api/nauka/gra')
-def kolejny_test(data: dict):
-	print(data)
-
-	updated_dict: Dict[str, dict | int | str | bool] = {'element_list': {
-										'example_name':2137,
-										'example_name2':7312
-									   },
-						'points': 666,
-						'max_points': 1234,
-						'question': 'ile to 5Σdi=3(i+1)',
-						'answer': 'skibiditoilet jest zawsze odpowiedzią',
-						'time':10,
-						'show_done': True,
-						'show_answer': True,
-						'show_user_answer': True
-						}
-	return updated_dict
+    print(user)
+    with open(os.path.join('nauka_web_api', "backend", "data", "nauka_user_data.json"), "r") as plik:
+        user_exists = user["user"] in json.load(plik)
+        return {"exists": user_exists}  # Zwróć obiekt JSON
 
 @router.post('/api/nauka/init')
 def nauka_init(data: Dict[str, List[str]]):
@@ -57,8 +39,11 @@ def nauka_move(data: dict) -> dict:
 	answer_time: float = data['time']
 	answer: bool = data["answer"]
 
-	updated_dict: dict = instancje_gry.instances[user].move(answer, answer_time)
+	print(data)
 
+	#updated_dict: dict = instancje_gry.instances[user].move(answer, answer_time)
+
+	updated_dict: dict = {'points': 1, 'max_points': 1, 'question': 'nowe pytanie', 'answer': 'nowa odpowiedź', 'chances': {'nowy_element': 100, 'kolejny_element': 50}}
 	return updated_dict
 
 

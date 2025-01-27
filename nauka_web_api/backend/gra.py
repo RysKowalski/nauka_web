@@ -5,7 +5,7 @@ import json
 class Game:
 	def __init__(self: Self, elements: list[str], name: str) -> None:
 		self.max_points: int = 0
-		self.chances: list[str] = []
+		self.chances: list[float] = []
 
 		self.max_points, self.chances = self.load_user_data(name, elements)
 			
@@ -15,18 +15,12 @@ class Game:
 		self.answers: list[str] = []
 		self.elements: list[str] = elements
 		self.current_element: int = 0
-		self.show_elements: dict[str, bool] = {"done": True, "answer": False, "user_answer": False}
 
 		with open(os.path.join('./nauka_web_api', 'backend', 'data', 'nauka_questions.json')) as plik:
 			questions: dict = json.load(plik)
 			for element in elements:
 				self.questions.extend(questions[element]['names'])
 				self.answers.extend(questions[element]['data'])
-
-		print(f'{self.max_points = } \n')
-		print(f'{self.chances = } \n')
-		print(f'{self.questions = } \n')
-		print(f'{self.answers = } \n')
 	
 	def get_data(self: Self) -> dict:
 		data: dict = {
@@ -34,14 +28,13 @@ class Game:
 			"max_points": self.max_points,
 			"question": self.questions[self.current_element],
 			"answer": self.answers[self.current_element],
-			"show_done": self.show_elements["done"],
-			"show_answer":  self.show_elements["answer"],
-			"show_user_answer": self.show_elements["user_answer"]
 		}
 		return data
 	
 	def move(self: Self, answer: bool, answer_time: float) -> dict:
-		return dict()
+
+		
+		return {'skibidi': 'skibidi'}
 	
 	def load_user_data(self: Self, name: str, elements: list[str]):
 		"""

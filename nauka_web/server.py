@@ -8,7 +8,6 @@ import json
 import os
 
 def get_path(name: str) -> str:
-	os.system("ls")
 	return os.path.join("nauka_web", "public", name, name + ".html")
 
 router: APIRouter = APIRouter()
