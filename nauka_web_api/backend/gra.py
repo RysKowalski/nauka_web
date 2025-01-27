@@ -2,40 +2,72 @@ from typing import Self
 import os
 import json
 
+import numpy as np
+from math import log2
+
 class Game:
 	def __init__(self: Self, elements: list[str], name: str) -> None:
+		self.modules: list[str] = elements
+		self.elements: list[dict] = []
 		self.max_points: int = 0
-		self.chances: list[float] = []
-
-		self.max_points, self.chances = self.load_user_data(name, elements)
-			
 		self.points: int = 0
-		
-		self.questions: list[str] = []
-		self.answers: list[str] = []
-		self.elements: list[str] = elements
 		self.current_element: int = 0
+		self.username: str = name
+
+		chances: list[float] = []
+		questions: list[str] = []
+		answers: list[str] = []
+		names: list[str] = []
+
+		self.max_points, chances = self.load_user_data(name, self.modules)
 
 		with open(os.path.join('./nauka_web_api', 'backend', 'data', 'nauka_questions.json')) as plik:
-			questions: dict = json.load(plik)
+			questions_from_file: dict = json.load(plik)
+
 			for element in elements:
-				self.questions.extend(questions[element]['names'])
-				self.answers.extend(questions[element]['data'])
+				questions.extend(questions_from_file[element]['questions'])
+				answers.extend(questions_from_file[element]['data'])
+				names.extend(questions_from_file[element]['names'])
+
+		for i, element in enumerate(names):
+			self.elements.append({
+				'name': element,
+				'chance': chances[i],
+				'question': questions[i],
+				'answer': answers[i]
+			})
 	
 	def get_data(self: Self) -> dict:
 		data: dict = {
-			"element_list": dict(zip(self.elements, self.chances)),
-			"max_points": self.max_points,
-			"question": self.questions[self.current_element],
-			"answer": self.answers[self.current_element],
+			'element_list': dict(zip([item['name'] for item in self.elements], [item['chance'] for item in self.elements])),
+			'max_points': self.max_points,
+			'question': self.elements[self.current_element]['question'],
+			'answer': self.elements[self.current_element]['answer'],
+			'points': self.points
 		}
+
+
 		return data
 	
-	def move(self: Self, answer: bool, answer_time: float) -> dict:
+	def move(self: Self, answer: bool, answer_time: float) -> None:
 
+		if answer_time / 10 > 1:
+			self.elements[self.current_element]['chance'] *= log2(answer_time) - 2.7
+
+		if answer:
+			self.points += 1
+			if self.points > self.max_points:
+				self.max_points = self.points
+
+			self.elements[self.current_element]['chance'] /= 1.2
+		else:
+			self.elements[self.current_element]['chance'] *= 1.7
+			self.points = 0
+			self.save_user_data()
 		
-		return {'skibidi': 'skibidi'}
-	
+		weights = np.array([item['chance'] for item in self.elements]) / np.sum([item['chance'] for item in self.elements])
+		self.current_element = np.random.choice(range(0, len(weights)), p=weights)
+
 	def load_user_data(self: Self, name: str, elements: list[str]):
 		"""
 		Loads user data from the 'nauka_user_data.json' file.
@@ -68,18 +100,16 @@ class Game:
 			max_points = 0
 			chances = [100 for _ in elements]
 
-		# Update user data if necessary
-		if not max_points:
-			with open(file_path, 'r') as file:
-				data = json.load(file)
-				data.setdefault(name, {})
-				data[name].setdefault('points', {})
-				data[name]['points']['|'.join(elements)] = {'max_points': max_points, 'chances': chances}
-
-			with open(file_path, 'w') as file:
-				json.dump(data, file)
-
 		return max_points, chances
+
+	def save_user_data(self: Self) -> None:
+		with open(os.path.join('nauka_web_api', 'backend', 'data', 'nauka_user_data.json'), 'r') as plik:
+			data: dict = json.load(plik)
+		
+		data[self.username]['|'.join(self.modules)] = {'max_points': self.max_points, 'chances': [item['chance'] for item in self.elements]}
+
+		with open(os.path.join('nauka_web_api', 'backend', 'data', 'nauka_user_data.json'), 'w') as plik:
+			json.dump(data, plik)
 
 class Instances:
 	def __init__(self: Self) -> None:
@@ -93,7 +123,12 @@ class Instances:
 if __name__ == '__main__':
 	instances: Instances = Instances()
 	
-	instances.new_instance('example_user', ['example', 'question'])
+	instances.new_instance('rysiek', ['example'])
 	
-	print(instances.instances)
+	print(instances.instances['rysiek'].get_data())
+
+	instances.instances['rysiek'].move(True, 1)
+
+	print()	
+	print(instances.instances['rysiek'].get_data())
 	

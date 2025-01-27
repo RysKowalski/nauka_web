@@ -170,23 +170,31 @@ function on_user_wrong() {
 	move(false)
 }
 
-async function move(user_answer) {
-	const user_time = timer.getTime()
-	const new_data = await sendRequest({'user': username, 'time': user_time, 'answer': user_answer}, 'POST', '/api/nauka/move')
+function move(user_answer) {
+    const user_time = timer.getTime();
 
-	points(new_data.points)
-	max_points(new_data.max_points)
-	question(new_data.question)
-	answer_content = new_data.answer
-	update_chances(new_data.chances)
-
-	answer(false)
-	user_choice_buttons(false)
-	done_button(true)
-	timer.set(0)
-	timer.start()
-
-	console.log(new_data)
+    sendRequest({'user': username, 'time': user_time, 'answer': user_answer}, 'POST', '/api/nauka/move')
+        .then((new_data) => {
+            // Po zakończeniu operacji, przetwarzamy dane
+            if (new_data && new_data.element_list) {
+                points(new_data.points);
+                max_points(new_data.max_points);
+                question(new_data.question);
+                answer_content = new_data.answer;
+                update_chances(new_data.element_list);
+            } else {
+                console.error('Niepoprawne dane zwrócone przez serwer:', new_data);
+            }
+            
+            answer(false);
+            user_choice_buttons(false);
+            done_button(true);
+            timer.set(0);
+            timer.start();
+        })
+        .catch((error) => {
+            console.error('Błąd podczas przetwarzania danych:', error);
+        });
 }
 
 async function init() {

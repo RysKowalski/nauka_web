@@ -36,14 +36,14 @@ def nauka_init(data: Dict[str, List[str]]):
 @router.post('/api/nauka/move')
 def nauka_move(data: dict) -> dict:
 	user: str = data['user']
-	answer_time: float = data['time']
+	answer_time: float = float(data['time'])
 	answer: bool = data["answer"]
 
 	print(data)
 
-	#updated_dict: dict = instancje_gry.instances[user].move(answer, answer_time)
+	instancje_gry.instances[user].move(answer, answer_time)
 
-	updated_dict: dict = {'points': 1, 'max_points': 1, 'question': 'nowe pytanie', 'answer': 'nowa odpowiedź', 'chances': {'nowy_element': 100, 'kolejny_element': 50}}
+	updated_dict: dict = instancje_gry.instances[user].get_data()
 	return updated_dict
 
 
