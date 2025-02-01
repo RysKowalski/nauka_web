@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 
 import os
@@ -9,6 +9,7 @@ from typing import Dict, Union, List
 from nauka_web_api.backend import gra
 from nauka_web_api.backend.new_module_validation import validate_dict_structure
 from nauka_web_api.backend.save_new_module import save_new_module
+# from nauka_web_api.backend.add_user import add_user_to_file, authenticate
 
 router: APIRouter = APIRouter()
 
@@ -19,10 +20,10 @@ def get_info():
 
 @router.post("/api/nauka/user_exist")
 def user_exist(user: dict):
-    print(user)
-    with open(os.path.join('nauka_web_api', "backend", "data", "nauka_user_data.json"), "r") as plik:
-        user_exists = user["user"] in json.load(plik)
-        return {"exists": user_exists}  # Zwróć obiekt JSON
+	print(user)
+	with open(os.path.join('nauka_web_api', "backend", "data", "nauka_user_data.json"), "r") as plik:
+		user_exists = user["user"] in json.load(plik)
+		return {"exists": user_exists}  # Zwróć obiekt JSON
 
 @router.post('/api/nauka/init')
 def nauka_init(data: Dict[str, List[str]]):
@@ -57,11 +58,15 @@ def submit_new_module(data: dict):
 	
 	save_new_module(data)
 	
-	return {'error': False, 'error_message': ''}
-	
+	return {'error': False, 'error_message': 'Udało się zapisać nowy moduł'}
 
-	
-	
+# @router.post('/api/nauka/add_user')
+# def add_user(data: Dict[str, str], api_key: str = Depends(authenticate)):
+# 	username = data.get('username')
+# 	if not username:
+# 		raise HTTPException(status_code=400, detail="Username is required")
+
+# 	return add_user_to_file(username)
 
 instancje_gry: gra.Instances = gra.Instances()
 

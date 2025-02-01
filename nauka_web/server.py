@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from typing import Dict
@@ -15,8 +15,9 @@ router: APIRouter = APIRouter()
 @router.get("/")
 def home():
 	# Zwrot głównego pliku HTML
-	location = get_path('index')
-	return FileResponse(location)
+	# location = get_path('index')
+	# return FileResponse(location)
+	return RedirectResponse(url="/nauka/wybieranie", headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
 
 @router.get("/nauka/add_module")
 def nauka_add_modules():

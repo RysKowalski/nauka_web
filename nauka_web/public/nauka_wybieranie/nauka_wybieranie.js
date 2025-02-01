@@ -5,136 +5,143 @@ async function loadCheckboxes() {
 	  if (!response.ok) {
 		throw new Error(`Błąd HTTP: ${response.status}`);
 	  }
-	  
+  
 	  // Pobierz obiekt JSON i uzyskaj listę kluczy
 	  const data = await response.json();
-	  const keys = Object.keys(data); // Pobiera listę kluczy obiektu
+	  const keys = Object.keys(data); // Lista kluczy obiektu
   
 	  // Znajdź kontener do dodawania checkboxów
 	  const container = document.getElementById('checkboxContainer');
-	  container.innerHTML = ''; // Wyczyszczenie kontenera
+	  container.innerHTML = ''; // Czyszczenie kontenera
   
 	  // Generowanie checkboxów na podstawie kluczy obiektu
 	  keys.forEach((key, index) => {
+		// Tworzymy główny kontener wiersza
 		const row = document.createElement('div');
 		row.className = 'checkbox-row';
-	  
+  
+		// Tworzymy label, który będzie opakowywał checkbox, niestandardowy kwadrat i tekst
+		const label = document.createElement('label');
+		label.className = 'checkbox-label';
+		label.htmlFor = `checkbox-${index}`;
+  
+		// Tworzymy input typu checkbox
 		const checkbox = document.createElement('input');
 		checkbox.type = 'checkbox';
 		checkbox.id = `checkbox-${index}`;
 		checkbox.checked = false;
 		checkbox.dataset.key = key;
-	  
-		const label = document.createElement('label');
-		label.htmlFor = checkbox.id;
-		label.textContent = key;
-	  
-		row.appendChild(checkbox);
+  
+		// Tworzymy niestandardowy kwadrat checkboxa
+		const customCheckbox = document.createElement('div');
+		customCheckbox.className = 'checkbox-custom';
+  
+		// Tworzymy element tekstowy dla etykiety
+		const textSpan = document.createElement('span');
+		textSpan.className = 'checkbox-text';
+		textSpan.textContent = key;
+  
+		// Dodajemy wszystkie elementy do labela (kolejność ma znaczenie: input, custom checkbox, tekst)
+		label.appendChild(checkbox);
+		label.appendChild(customCheckbox);
+		label.appendChild(textSpan);
+  
+		// Dodajemy label do wiersza
 		row.appendChild(label);
-	  
 		container.appendChild(row);
 	  });
 	} catch (error) {
 	  console.error('Błąd ładowania checkboxów:', error);
 	}
-}
-
-// Funkcja pobierająca status checkboxów
-function getCheckboxStatus() {
+  }
+  
+  // Funkcja pobierająca status checkboxów
+  function getCheckboxStatus() {
 	const checkboxes = document.querySelectorAll('#checkboxContainer input[type="checkbox"]');
 	const status = {};
-
+  
 	checkboxes.forEach(checkbox => {
-		status[checkbox.dataset.key] = checkbox.checked;
+	  status[checkbox.dataset.key] = checkbox.checked;
 	});
-
+  
 	return status;
-}
-
-// Funkcja sprawdzająca, czy przynajmniej jeden checkbox jest zaznaczony
-function areAnyCheckboxesChecked() {
+  }
+  
+  // Funkcja sprawdzająca, czy przynajmniej jeden checkbox jest zaznaczony
+  function areAnyCheckboxesChecked() {
 	const checkboxes = document.querySelectorAll('#checkboxContainer input[type="checkbox"]');
 	return Array.from(checkboxes).some(checkbox => checkbox.checked);
-}
-
-// Funkcja przekierowująca na nową stronę z parametrami w URL
-
-async function redirectToGame() {
-	// Sprawdzanie, czy zaznaczono przynajmniej jeden checkbox
+  }
+  
+  // Funkcja przekierowująca na nową stronę z parametrami w URL
+  async function redirectToGame() {
 	if (!areAnyCheckboxesChecked()) {
-		alert('Musisz wybrać przynajmniej jeden checkbox!');
-		return;
+	  alert('Musisz wybrać przynajmniej jeden checkbox!');
+	  return;
 	}
-
-	// Pobranie nazwy użytkownika z pola input
+  
 	const user = document.querySelector('.user').value;
 	if (!user) {
-		alert('Nazwa użytkownika nie może być pusta!');
+	  alert('Nazwa użytkownika nie może być pusta!');
+	  return;
+	}
+  
+	try {
+	  const userExists = await user_exist(user);
+	  if (!userExists) {
+		alert('Nieprawidłowa nazwa użytkownika! Spróbuj ponownie.');
 		return;
-	}
-
-	try {
-		// Sprawdzenie, czy użytkownik istnieje
-		const userExists = await user_exist(user); // Użycie await
-		if (!userExists) {
-			alert('Nieprawidłowa nazwa użytkownika! Spróbuj ponownie.');
-			return;
-		}
-
-		// Pobranie statusów checkboxów
-		const status = getCheckboxStatus();
-		const params = new URLSearchParams();
-
-		// Dodanie statusu checkboxów jako parametrów URL
-		Object.keys(status).forEach(key => {
-			params.append(key, status[key]);
-		});
-
-		params.append("user", user);
-
-		// Przekierowanie na stronę /nauka/gra z parametrami
-		window.location.href = `/nauka/gra?${params.toString()}`;
+	  }
+  
+	  const status = getCheckboxStatus();
+	  const params = new URLSearchParams();
+  
+	  Object.keys(status).forEach(key => {
+		params.append(key, status[key]);
+	  });
+  
+	  params.append("user", user);
+	  window.location.href = `/nauka/gra?${params.toString()}`;
 	} catch (error) {
-		console.error('Błąd podczas sprawdzania użytkownika:', error);
-		alert('Wystąpił błąd. Spróbuj ponownie później.');
+	  console.error('Błąd podczas sprawdzania użytkownika:', error);
+	  alert('Wystąpił błąd. Spróbuj ponownie później.');
 	}
-}
-
-async function user_exist(user) {
+  }
+  
+  async function user_exist(user) {
 	try {
-		// Wywołanie asynchronicznego żądania
-		const response = await sendRequest({ user }, "POST", "/api/nauka/user_exist");
-		return response.exists; // Oczekujemy odpowiedzi w formacie { exists: true/false }
+	  const response = await sendRequest({ user }, "POST", "/api/nauka/user_exist");
+	  return response.exists;
 	} catch (error) {
-		console.error('Błąd podczas sprawdzania użytkownika:', error);
-		return false; // Jeśli wystąpił błąd, traktuj użytkownika jako nieistniejącego
+	  console.error('Błąd podczas sprawdzania użytkownika:', error);
+	  return false;
 	}
-}
-
-async function sendRequest(data, method, url) {
+  }
+  
+  async function sendRequest(data, method, url) {
 	try {
-		const options = {
-			method,
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		};
-		if (method === 'POST') options.body = JSON.stringify(data);
-		const response = await fetch(url, options);
-		if (!response.ok) {
-			throw new Error(`HTTP error! Status: ${response.status}`);
-		}
-		const jsonResponse = await response.json();
-		console.log('Odpowiedź z serwera:', jsonResponse);
-		return jsonResponse;
+	  const options = {
+		method,
+		headers: { 'Content-Type': 'application/json' },
+	  };
+	  if (method === 'POST') options.body = JSON.stringify(data);
+	  const response = await fetch(url, options);
+	  if (!response.ok) {
+		throw new Error(`HTTP error! Status: ${response.status}`);
+	  }
+	  const jsonResponse = await response.json();
+	  console.log('Odpowiedź z serwera:', jsonResponse);
+	  return jsonResponse;
 	} catch (error) {
-		console.error('Błąd podczas wysyłania żądania:', error);
-		throw error;
+	  console.error('Błąd podczas wysyłania żądania:', error);
+	  throw error;
 	}
-}
-
-// Wywołanie funkcji po załadowaniu dokumentu
-document.addEventListener('DOMContentLoaded', loadCheckboxes);
-
-// Dodanie nasłuchiwacza zdarzeń do przycisku
-document.getElementById('getCheckboxStatus').addEventListener('click', redirectToGame);
+  }
+  
+  // Inicjalizacja po załadowaniu dokumentu
+  document.addEventListener('DOMContentLoaded', loadCheckboxes);
+  document.getElementById('getCheckboxStatus').addEventListener('click', redirectToGame);
+  document.getElementById('addModuleButton').addEventListener('click', function() {
+	window.location.href = '/nauka/add_module';
+  });
+  

@@ -60,11 +60,6 @@ function updateElementsDisplay() {
     });
 }
 
-function showData() {
-    console.log(module);
-    alert(JSON.stringify(module, null, 2));
-}
-
 function send_data() {
     const urlSubmit = '/api/nauka/submit';
     const data = JSON.stringify(module);
@@ -79,7 +74,7 @@ function send_data() {
         if (result.error) {
             alert("Błąd: " + result.error_message);
         } else {
-            console.log('Sukces:', result);
+            alert('Sukces: ' + result.error_message);
         }
     })
     .catch(error => {
@@ -91,5 +86,4 @@ let module = { name: "", elements: [] };
 
 document.getElementById("module-name").addEventListener("input", updateModuleName);
 document.getElementById("add-element").addEventListener("click", addElement);
-document.getElementById("show-data").addEventListener("click", showData);
 document.getElementById("submit-data").addEventListener("click", send_data);
