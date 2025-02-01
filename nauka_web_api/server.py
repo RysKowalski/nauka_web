@@ -7,6 +7,8 @@ import json
 from typing import Dict, Union, List
 
 from nauka_web_api.backend import gra
+from nauka_web_api.backend.new_module_validation import validate_dict_structure
+from nauka_web_api.backend.save_new_module import save_new_module
 
 router: APIRouter = APIRouter()
 
@@ -46,7 +48,20 @@ def nauka_move(data: dict) -> dict:
 	updated_dict: dict = instancje_gry.instances[user].get_data()
 	return updated_dict
 
+@router.post('/api/nauka/submit')
+def submit_new_module(data: dict):
+	print(data)
+	validated_data: dict = validate_dict_structure(data)
+	if validated_data['error']:
+		return validated_data
+	
+	save_new_module(data)
+	
+	return {'error': False, 'error_message': ''}
+	
 
+	
+	
 
 instancje_gry: gra.Instances = gra.Instances()
 

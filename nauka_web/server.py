@@ -18,6 +18,11 @@ def home():
 	location = get_path('index')
 	return FileResponse(location)
 
+@router.get("/nauka/add_module")
+def nauka_add_modules():
+	location = get_path('nauka_add_modules')
+	return FileResponse(location)
+
 @router.get("/nauka/wybieranie")
 def nauka_wybieranie():
 	# Zwrot pliku HTML dla nauka/wybieranie

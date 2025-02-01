@@ -36,6 +36,7 @@ class Game:
 				'question': questions[i],
 				'answer': answers[i]
 			})
+			
 	
 	def get_data(self: Self) -> dict:
 		data: dict = {
@@ -88,12 +89,19 @@ class Game:
 				user_data = user_data.get(name, {})  # Get user data or an empty dict
 				points_data = user_data.get('points', {})
 
-				if '|'.join(elements) in points_data:
-					max_points = points_data['|'.join(elements)]['max_points']
-					chances = points_data['|'.join(elements)]['chances']
-				else:
-					max_points = 0
-					chances = [100 for _ in elements]
+			if '|'.join(elements) in points_data:
+				max_points = points_data['|'.join(elements)]['max_points']
+				chances = points_data['|'.join(elements)]['chances']
+			else:
+				with open(os.path.join('nauka_web_api', 'backend', 'data', 'nauka_questions.json'), 'r') as plik:
+					questions_data: dict = json.load(plik)
+					questions: list = []
+					for module in elements:
+						questions.extend(questions_data[module]['questions'])
+				
+				max_points = 0
+				chances = [100 for _ in range(len(questions))]
+					
 
 		except FileNotFoundError:
 			# Handle file not found

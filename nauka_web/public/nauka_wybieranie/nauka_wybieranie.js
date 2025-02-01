@@ -16,20 +16,23 @@ async function loadCheckboxes() {
   
 	  // Generowanie checkboxów na podstawie kluczy obiektu
 	  keys.forEach((key, index) => {
+		const row = document.createElement('div');
+		row.className = 'checkbox-row';
+	  
 		const checkbox = document.createElement('input');
 		checkbox.type = 'checkbox';
 		checkbox.id = `checkbox-${index}`;
-		checkbox.checked = false; // Domyślnie odznaczone
-		checkbox.dataset.key = key; // Przypisanie nazwy klucza jako atrybutu
-  
+		checkbox.checked = false;
+		checkbox.dataset.key = key;
+	  
 		const label = document.createElement('label');
 		label.htmlFor = checkbox.id;
-		label.textContent = key; // Ustaw nazwę klucza jako tekst etykiety
-  
-		// Dodanie checkboxa i etykiety do kontenera
-		container.appendChild(checkbox);
-		container.appendChild(label);
-		container.appendChild(document.createElement('br')); // Nowa linia
+		label.textContent = key;
+	  
+		row.appendChild(checkbox);
+		row.appendChild(label);
+	  
+		container.appendChild(row);
 	  });
 	} catch (error) {
 	  console.error('Błąd ładowania checkboxów:', error);
