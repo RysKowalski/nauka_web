@@ -6,11 +6,11 @@ from typing import Optional
 
 ADMIN_API_KEY = os.getenv("ADMIN_API_KEY")
 
-def authenticate(api_key: Optional[str] = Header(None)):
-    print(api_key)
-    if api_key != ADMIN_API_KEY:
+def authenticate(x_api_key: Optional[str] = Header(None)):
+    print(f"Received API Key: {x_api_key}")  # Debugging
+    if x_api_key != ADMIN_API_KEY:
         raise HTTPException(status_code=401, detail="Invalid API Key")
-    return api_key
+    return x_api_key
 
 def add_user_to_file(username: str):
     file_path = os.path.join('nauka_web_api', 'backend', 'data', 'nauka_user_data.json')

@@ -28,7 +28,11 @@ def nauka_add_modules():
 def nauka_wybieranie():
 	# Zwrot pliku HTML dla nauka/wybieranie
 	location = get_path('nauka_wybieranie')
-	return FileResponse(location)
+
+	response = FileResponse(location)
+	response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, proxy-revalidate"
+
+	return response
 	
 @router.get("/nauka/gra")
 def nauka_gra():

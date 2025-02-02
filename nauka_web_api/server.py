@@ -9,14 +9,22 @@ from typing import Dict, Union, List
 from nauka_web_api.backend import gra
 from nauka_web_api.backend.new_module_validation import validate_dict_structure
 from nauka_web_api.backend.save_new_module import save_new_module
-# from nauka_web_api.backend.add_user import add_user_to_file, authenticate
+from nauka_web_api.backend.add_user import add_user_to_file, authenticate
 
 router: APIRouter = APIRouter()
 
 @router.get("/api/nauka/data")
 def get_info():
-	# Zwrot pliku JSON
-	return FileResponse(os.path.join('nauka_web_api', 'backend', 'data', 'nauka_questions.json'))
+    # Ścieżka do pliku
+    file_path = os.path.join('nauka_web_api', 'backend', 'data', 'nauka_questions.json')
+    
+    # Tworzymy odpowiedź FileResponse
+    response = FileResponse(file_path)
+    
+    # Dodajemy nagłówek Cache-Control
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, proxy-revalidate"
+    
+    return response
 
 @router.post("/api/nauka/user_exist")
 def user_exist(user: dict):
@@ -60,13 +68,13 @@ def submit_new_module(data: dict):
 	
 	return {'error': False, 'error_message': 'Udało się zapisać nowy moduł'}
 
-# @router.post('/api/nauka/add_user')
-# def add_user(data: Dict[str, str], api_key: str = Depends(authenticate)):
-# 	username = data.get('username')
-# 	if not username:
-# 		raise HTTPException(status_code=400, detail="Username is required")
+@router.post('/api/nauka/add_user')
+def add_user(data: Dict[str, str], api_key: str = Depends(authenticate)):
+	username = data.get('username')
+	if not username:
+		raise HTTPException(status_code=400, detail="Username is required")
 
-# 	return add_user_to_file(username)
+	return add_user_to_file(username)
 
 instancje_gry: gra.Instances = gra.Instances()
 
