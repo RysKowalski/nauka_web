@@ -9,7 +9,7 @@ from typing import Dict, Union, List
 from nauka_web_api.backend import gra
 from nauka_web_api.backend.new_module_validation import validate_dict_structure
 from nauka_web_api.backend.save_new_module import save_new_module
-from nauka_web_api.backend.add_user import add_user_to_file, authenticate
+from nauka_web_api.backend import admin
 
 router: APIRouter = APIRouter()
 
@@ -69,18 +69,37 @@ def submit_new_module(data: dict):
 	return {'error': False, 'error_message': 'Udało się zapisać nowy moduł'}
 
 @router.post('/api/nauka/add_user')
-def add_user(data: Dict[str, str], api_key: str = Depends(authenticate)):
+def add_user(data: Dict[str, str], api_key: str = Depends(admin.authenticate)):
 	username = data.get('username')
 	if not username:
 		raise HTTPException(status_code=400, detail="Username is required")
 
-	return add_user_to_file(username)
+	return admin.add_user(username)
+
+@router.post('/api/nauka/remove_user')
+def remove_user(data: Dict[str, str], api_key: str = Depends(admin.authenticate)):
+	username = data.get('username')
+	if not username:
+		raise HTTPException(status_code=400, detail="Username is required")
+
+	return admin.remove_user(username)
+
+@router.post('/api/nauka/remove_module')
+def remove_module(data: Dict[str, str], api_key: str = Depends(admin.authenticate)):
+	module_name = data.get('module_name')
+	if not module_name:
+		raise HTTPException(status_code=400, detail="Username is required")
+
+	return admin.remove_module(module_name)
+
+@router.get('/api/nauka/user_list')
+def get_user_list(api_key: str = Depends(admin.authenticate)):
+	return admin.get_user_list()
 
 instancje_gry: gra.Instances = gra.Instances()
 
 if __name__ == "__main__":
 	PORT: int = 3001
 	import uvicorn
-
 
 	uvicorn.run(router, host="127.0.0.1", port=PORT)

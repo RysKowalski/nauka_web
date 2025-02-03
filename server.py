@@ -1,13 +1,13 @@
 import os
 from dotenv import load_dotenv
+load_dotenv()
+
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from nauka_web.server import router as router_main
 from nauka_web_api.server import router as router_api
-
-load_dotenv()
 
 app: FastAPI = FastAPI()
 app.include_router(router_main)
