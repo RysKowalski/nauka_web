@@ -1,4 +1,3 @@
 .mympy_cache
 __pycache__
 .env
-admin_ui.py

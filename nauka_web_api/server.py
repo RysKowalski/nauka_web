@@ -76,7 +76,7 @@ def add_user(data: Dict[str, str], api_key: str = Depends(admin.authenticate)):
 
 	return admin.add_user(username)
 
-@router.post('/api/nauka/remove_user')
+@router.delete('/api/nauka/remove_user')
 def remove_user(data: Dict[str, str], api_key: str = Depends(admin.authenticate)):
 	username = data.get('username')
 	if not username:
@@ -84,7 +84,7 @@ def remove_user(data: Dict[str, str], api_key: str = Depends(admin.authenticate)
 
 	return admin.remove_user(username)
 
-@router.post('/api/nauka/remove_module')
+@router.delete('/api/nauka/remove_module')
 def remove_module(data: Dict[str, str], api_key: str = Depends(admin.authenticate)):
 	module_name = data.get('module_name')
 	if not module_name:
