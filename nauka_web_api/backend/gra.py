@@ -17,7 +17,6 @@ class Game:
 		chances: list[float] = []
 		questions: list[str] = []
 		answers: list[str] = []
-		names: list[str] = []
 
 		self.max_points, chances = self.load_user_data(name, self.modules)
 
@@ -27,9 +26,8 @@ class Game:
 			for element in elements:
 				questions.extend(questions_from_file[element]['questions'])
 				answers.extend(questions_from_file[element]['data'])
-				names.extend(questions_from_file[element]['names'])
 
-		for i, element in enumerate(names):
+		for i, element in enumerate(questions):
 			self.elements.append({
 				'name': element,
 				'chance': chances[i],

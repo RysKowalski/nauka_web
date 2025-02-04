@@ -19,17 +19,15 @@ def validate_dict_structure(data):
 		if not isinstance(element, dict):
 			return {'error': True, 'error_message': f'Element na pozycji {index + 1} musi być typu dict'}
 		
-		if set(element.keys()) != {"name", "question", "answer"}:
-			return {'error': True, 'error_message': f'Element na pozycji {index + 1} musi zawierać dokładnie klucze: "name", "question" i "answer".'}
+		if set(element.keys()) != {"question", "answer"}:
+			return {'error': True, 'error_message': f'Element na pozycji {index + 1} musi zawierać dokładnie klucze: "question" i "answer".'}
 		
-		for key in ["name", "question", "answer"]:
+		for key in ["question", "answer"]:
 			if not isinstance(element[key], str):
 				return {'error': True, 'error_message': f'Wartość klucza "{key}" w elemencie na pozycji {index + 1} musi być typu string.'}
 			elif element[key] == '':
 				error_message: str = ''
-				if key == 'name':
-					error_message = f'Nazwa elementu {index + 1} nie może być pusta.'
-				elif key == 'question':
+				if key == 'question':
 					error_message = f'Pytanie elementu {index + 1} nie może być puste'
 				elif key == 'answer':
 					error_message = f'Odpowiedź elementu {index + 1} nie może być puste'

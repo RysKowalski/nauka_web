@@ -10,7 +10,7 @@ function addElement() {
 }
 
 function createNewElement() {
-    return { name: "", question: "", answer: "" };
+    return {question: "", answer: "" };
 }
 
 function createElementDiv(element, index) {
@@ -19,13 +19,12 @@ function createElementDiv(element, index) {
     
     const numberLabel = document.createElement("span");
     numberLabel.textContent = (index + 1) + ". ";
-    
-    const nameInput = createInput("Nazwa elementu", element.name, (value) => element.name = value);
+
     const questionInput = createInput("Pytanie", element.question, (value) => element.question = value);
     const answerInput = createInput("Odpowiedź", element.answer, (value) => element.answer = value);
     const removeButton = createRemoveButton(index);
     
-    elementDiv.append(numberLabel, nameInput, questionInput, answerInput, removeButton);
+    elementDiv.append(numberLabel, questionInput, answerInput, removeButton);
     return elementDiv;
 }
 

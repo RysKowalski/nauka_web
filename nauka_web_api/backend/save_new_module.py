@@ -14,11 +14,10 @@ def save_new_module(data: dict):
 	module_questions: list[str] = []
 
 	for i, element in enumerate(data['elements']):
-		module_names.append(element['name'])
 		module_datas.append(element['answer'])
 		module_questions.append(element['question'])
 	
-	modules[name] = {'data': module_datas, 'names': module_names, 'questions': module_questions}
+	modules[name] = {'data': module_datas, 'questions': module_questions}
 	print(modules)
 	
 	with open(os.path.join("nauka_web_api", "backend", "data", "nauka_questions.json"), 'w') as plik:

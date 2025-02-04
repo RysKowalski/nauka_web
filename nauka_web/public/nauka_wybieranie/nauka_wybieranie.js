@@ -137,6 +137,21 @@ async function loadCheckboxes() {
 	  throw error;
 	}
   }
+
+  async function loadVersion() {
+    try {
+        const response = await fetch('/version');
+        if (!response.ok) throw new Error(`Błąd HTTP: ${response.status}`);
+        const data = await response.json();
+        document.getElementById('version').textContent = `Wersja: ${data.version}`;
+    } catch (error) {
+        console.error('Błąd ładowania wersji:', error);
+        document.getElementById('version').textContent = 'Wersja: brak danych';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadVersion);
+
   
   // Inicjalizacja po załadowaniu dokumentu
   document.addEventListener('DOMContentLoaded', loadCheckboxes);
