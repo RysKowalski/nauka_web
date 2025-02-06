@@ -81,8 +81,24 @@ function send_data() {
     });
 }
 
+async function loadVersion() {
+    try {
+        const response = await fetch('/version');
+        if (!response.ok) throw new Error(`Błąd HTTP: ${response.status}`);
+        const data = await response.json();
+        document.getElementById('version').textContent = `Wersja: ${data.version}`;
+    } catch (error) {
+        console.error('Błąd ładowania wersji:', error);
+        document.getElementById('version').textContent = 'Wersja: brak danych';
+    }
+}
+
 let module = { name: "", elements: [] };
+
+document.addEventListener('DOMContentLoaded', loadVersion)
 
 document.getElementById("module-name").addEventListener("input", updateModuleName);
 document.getElementById("add-element").addEventListener("click", addElement);
 document.getElementById("submit-data").addEventListener("click", send_data);
+
+

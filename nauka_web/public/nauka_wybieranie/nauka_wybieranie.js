@@ -138,7 +138,7 @@ async function loadCheckboxes() {
 	}
   }
 
-  async function loadVersion() {
+async function loadVersion() {
     try {
         const response = await fetch('/version');
         if (!response.ok) throw new Error(`Błąd HTTP: ${response.status}`);
