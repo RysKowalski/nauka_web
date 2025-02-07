@@ -95,6 +95,17 @@ function user_choice_buttons(show) {
 	}
 }
 
+function show_chances(show) {
+	const element = document.getElementById('chances')
+	if (show) {
+		element.classList.add('visible');
+		element.classList.remove('hidden');
+	} else {
+		element.classList.add('hidden');
+		element.classList.remove('visible');
+	}
+}
+
 function update_chances(data) {
 	const chancesElement = document.getElementById('chances');
 	chancesElement.innerHTML = '';
@@ -203,6 +214,7 @@ async function init() {
 		max_points(0);
 		question('Brak pytania')
 		answer(false)
+		show_chances(false)
 		update_chances({'brak': 0})
 		done_button(true)
 		user_choice_buttons(false)
