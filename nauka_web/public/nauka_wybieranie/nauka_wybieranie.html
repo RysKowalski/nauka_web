@@ -8,6 +8,22 @@
   <link rel="stylesheet" href="/nauka_web/nauka_wybieranie/nauka_wybieranie.css">
 </head>
 <body class="container py-4">
+	<div id="discord-login" class="position-absolute top-0 end-0 m-3 d-none d-md-flex align-items-center p-2 rounded">
+		<a href="https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=identify"
+		   class="text-white text-decoration-none d-flex align-items-center">
+			<img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/discord.svg" alt="Discord" class="discord-icon me-2">
+			<span>Zaloguj się</span>
+		</a>
+	</div>
+	
+	<!-- Na telefonach - kontener centralny -->
+	<div id="discord-login-mobile" class="d-md-none text-center mt-3">
+		<a href="https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=identify"
+		   class="btn btn-primary d-flex justify-content-center align-items-center">
+			<img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/discord.svg" alt="Discord" class="discord-icon me-2">
+			<span>Zaloguj się</span>
+		</a>
+	</div>
   <h2 class="text-center">Witaj! Wprowadź swoją nazwę użytkownika</h2>
   <input type="text" class="form-control mb-3 user" placeholder="Wpisz nazwę użytkownika">
 
