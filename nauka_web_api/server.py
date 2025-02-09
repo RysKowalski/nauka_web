@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.responses import FileResponse
 
 import os
 import json
+import httpx
 
 from typing import Dict, Union, List
 
@@ -10,8 +11,13 @@ from nauka_web_api.backend import gra
 from nauka_web_api.backend.new_module_validation import validate_dict_structure
 from nauka_web_api.backend.save_new_module import save_new_module
 from nauka_web_api.backend import admin
+from nauka_web_api.backend import discord_login
 
 router: APIRouter = APIRouter()
+
+@router.get("/auth/callback")
+async def auth_callback(code: str, response: Response):
+	return await discord_login.auth_callback(code, response)
 
 @router.get("/api/nauka/data")
 def get_info():
@@ -95,6 +101,8 @@ def remove_module(data: Dict[str, str], api_key: str = Depends(admin.authenticat
 @router.get('/api/nauka/user_list')
 def get_user_list(api_key: str = Depends(admin.authenticate)):
 	return admin.get_user_list()
+
+
 
 instancje_gry: gra.Instances = gra.Instances()
 
