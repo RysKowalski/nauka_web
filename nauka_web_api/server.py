@@ -74,14 +74,6 @@ def submit_new_module(data: dict, api_key: str = Cookie(None)):
 	
 	return {'error': False, 'error_message': 'Udało się zapisać nowy moduł'}
 
-@router.post('/api/nauka/add_user')
-def add_user(data: Dict[str, str], api_key: str = Depends(admin.authenticate)):
-	username = data.get('username')
-	if not username:
-		raise HTTPException(status_code=400, detail="Username is required")
-
-	return admin.add_user(username)
-
 @router.delete('/api/nauka/remove_user')
 def remove_user(data: Dict[str, str], api_key: str = Depends(admin.authenticate)):
 	username = data.get('username')
@@ -97,6 +89,10 @@ def remove_module(data: Dict[str, str], api_key: str = Depends(admin.authenticat
 		raise HTTPException(status_code=400, detail="Username is required")
 
 	return admin.remove_module(module_name)
+
+@router.get('/api/nauka/modules')
+def get_users(api_key: str = Depends(admin.authenticate)) -> list[dict[str, str]]:
+	return admin.get_module_list()
 
 @router.get('/api/get_user_status')
 def is_logged(api_key: str = Cookie(None)):

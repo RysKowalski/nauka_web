@@ -14,7 +14,7 @@ REMOVE_USER_URL: str = 'api/nauka/remove_user'
 REMOVE_MODULE_URL: str = 'api/nauka/remove_module'
 
 USER_LIST_URL: str = 'api/nauka/user_list'
-MODULE_LIST_URL: str = 'api/nauka/data'
+MODULE_LIST_URL: str = 'api/nauka/modules'
 
 HELP: str = """exit -> exit program
 usradd <username> -> adds user to website and prints request json
@@ -43,9 +43,9 @@ def get_user_list() -> list[str]:
 	user_list: list[str] = response.json()['user_list']
 	return user_list
 
-def get_module_list() -> list[str]:
-	response = requests.get(websites[website_mode] + MODULE_LIST_URL)
-	module_list: list[str] = list(response.json().keys())
+def get_module_list() -> list[dict[str, str]]:
+	response = requests.get(websites[website_mode] + MODULE_LIST_URL, headers={'X-API-Key': keys[website_mode]})
+	module_list: list[dict[str, str]] = response.json()
 	return module_list
 
 def set_website_mode(mode: str):
