@@ -2,9 +2,14 @@ import json
 import os
 from fastapi import HTTPException, Header
 
-from typing import Optional
+from typing import Optional, TypedDict
 
 ADMIN_API_KEY = os.getenv("ADMIN_API_KEY")
+
+class Modules(TypedDict):
+    data: list[str]
+    questions: list[str]
+    username: str
 
 def authenticate(x_api_key: Optional[str] = Header(None)):
 	if x_api_key != ADMIN_API_KEY:
@@ -99,6 +104,21 @@ def get_user_list() -> dict[str, list[str]]:
 			user_list = []
 
 		return {'user_list': user_list}
+	
+	except Exception as e:
+		raise HTTPException(status_code=500, detail=str(e))
+
+def get_module_list() -> list[dict[str, str]]:
+	file_path = os.path.join('nauka_web_api', 'backend', 'data', 'nauka_questions.json')
+
+	try:
+		with open(file_path, 'r') as plik:
+			modules: dict[str, Modules] = json.load(plik)
+		
+		return_data: list[dict[str, str]] = []
+		for module in modules.keys():
+			return_data.append({module: modules[module]['username']})
+		return return_data
 	
 	except Exception as e:
 		raise HTTPException(status_code=500, detail=str(e))
