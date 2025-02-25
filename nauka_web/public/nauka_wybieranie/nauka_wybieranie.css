@@ -8,7 +8,7 @@ body {
 	color: #333;
 	line-height: 1.6;
   }
-  
+
   /* Nagłówki */
   h2 {
 	color: #444;
@@ -29,7 +29,7 @@ body {
 	outline: none;
 	transition: border-color 0.3s ease;
   }
-  
+
   .user:focus {
 	border-color: #007bff;
 	box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
@@ -192,3 +192,73 @@ body {
 	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
   }
   
+#discord-login {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #5865F2;
+    padding: 10px 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+#discord-login:hover {
+    background: #4752C4;
+    transform: scale(1.05);
+}
+
+#discord-login a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.discord-icon {
+    width: 24px;
+    height: 24px;
+    filter: invert(100%);
+}
+
+#discord-login {
+    background: #5865F2;
+    border-radius: 8px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    padding: 8px 12px;
+}
+
+#discord-login:hover {
+    background: #4752C4;
+    transform: scale(1.05);
+}
+
+.discord-icon {
+    width: 24px;
+    height: 24px;
+    filter: invert(100%);
+}
+
+/* Ustawienie oryginalnych kolorów dla avatarów */
+.original-avatar {
+  filter: none !important; /* Zapewnia, że żadne filtry CSS nie wpłyną na kolory */
+  border-radius: 50%; /* Zaokrąglij obraz, jeśli chcesz uzyskać avatar w kształcie koła */
+  object-fit: cover; /* Zachowuje proporcje obrazu */
+}
+
+
+#discord-login-mobile a {
+    background: #5865F2;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+}
+
+#discord-login-mobile a:hover {
+    background: #4752C4;
+}

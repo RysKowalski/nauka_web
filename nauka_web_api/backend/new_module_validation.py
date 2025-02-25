@@ -1,4 +1,9 @@
-def validate_dict_structure(data):
+from nauka_web_api.backend.login_stuff import get_user_status
+
+def validate_dict_structure(data, api_key: str):
+
+	if not get_user_status(api_key)['is_logged']:
+		return {'error': True, 'error_message': 'Żeby dodać nowy modół, musisz się zalogować.'}
 	
 	if not isinstance(data, dict):
 		return {'error': True, 'error_message': 'Dane muszą być typu dict'}
@@ -13,7 +18,7 @@ def validate_dict_structure(data):
 		return {'error': True, 'error_message': 'Wartość klucza "elements" musi być listą.'}
 	
 	if data['name'] == '':
-		return {'error': True, 'error_message': 'Nazwa n owego modułu nie może być pusta'}
+		return {'error': True, 'error_message': 'Nazwa nowego modułu nie może być pusta'}
 
 	for index, element in enumerate(data["elements"]):
 		if not isinstance(element, dict):

@@ -93,9 +93,48 @@ async function loadVersion() {
     }
 }
 
+function checkUserStatus() {
+    fetch("/api/get_user_status")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Błąd sieci lub serwera");
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.is_logged) {
+          // Znalezienie elementów interfejsu
+          const loginButton = document.querySelector("#discord-login a");
+          const loginMobileButton = document.querySelector("#discord-login-mobile a");
+          const discordIcon = document.querySelector("#discord-login img");
+          const discordIconMobile = document.querySelector("#discord-login-mobile img");
+          
+          // Tworzenie URL awatara
+          const avatarUrl = `https://cdn.discordapp.com/avatars/${data.discord_id}/${data.avatar}.png`;
+
+          // Zmiana awatara
+          discordIcon.src = avatarUrl;
+          discordIconMobile.src = avatarUrl;
+
+          // Zmiana napisu na nazwę globalną
+          loginButton.querySelector("span").textContent = data.global_name;
+          loginMobileButton.querySelector("span").textContent = data.global_name;
+
+          // Dodanie klasy do wyświetlenia awatara w oryginalnych kolorach
+          discordIcon.classList.add("original-avatar");
+          discordIconMobile.classList.add("original-avatar");
+        }
+      })
+      .catch(error => {
+        console.error("Wystąpił błąd podczas sprawdzania statusu użytkownika:", error);
+      });
+  }
+
+
 let module = { name: "", elements: [] };
 
 document.addEventListener('DOMContentLoaded', loadVersion)
+document.addEventListener('DOMContentLoaded', checkUserStatus)
 
 document.getElementById("module-name").addEventListener("input", updateModuleName);
 document.getElementById("add-element").addEventListener("click", addElement);
