@@ -13,7 +13,7 @@ DISCORD_TOKEN_URL = "https://discord.com/api/oauth2/token"
 DISCORD_USER_URL = "https://discord.com/api/users/@me"
 
 # Inicjalizacja bazy danych
-DB_PATH = ""
+DB_PATH = os.path.join('nauka_web_api', "backend", "data", "users.db")
 
 def init_db():
     """Tworzy tabelę w bazie danych, jeśli nie istnieje."""
@@ -24,13 +24,13 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             discord_id TEXT UNIQUE,
             username TEXT,
+            global_name TEXT,
+            avatar TEXT,
             api_key TEXT UNIQUE
         )
     """)
     conn.commit()
     conn.close()
-
-init_db()
 
 async def auth_callback(code: str, response: Response):
     """Obsługuje callback po autoryzacji na Discordzie."""
@@ -65,6 +65,10 @@ async def auth_callback(code: str, response: Response):
         user_data = user_response.json()
         discord_id = user_data["id"]
         username = user_data["username"]
+        global_name = user_data.get("global_name", "")
+        avatar = user_data.get("avatar", "")
+        
+        print(f'{user_data = }')
 
         # Sprawdzenie, czy użytkownik już istnieje
         conn = sqlite3.connect(DB_PATH)
@@ -77,8 +81,8 @@ async def auth_callback(code: str, response: Response):
         else:
             # Generowanie nowego klucza API
             api_key = secrets.token_hex(32)
-            cursor.execute("INSERT INTO users (discord_id, username, api_key) VALUES (?, ?, ?)",
-                           (discord_id, username, api_key))
+            cursor.execute("INSERT INTO users (discord_id, username, global_name, avatar, api_key) VALUES (?, ?, ?, ?, ?)",
+                           (discord_id, username, global_name, avatar, api_key))
             conn.commit()
 
         conn.close()
@@ -88,3 +92,58 @@ async def auth_callback(code: str, response: Response):
         response.set_cookie(key="api_key", value=api_key, httponly=True, secure=True, samesite="lax")
 
         return response
+
+def get_user_status(api_key: str) -> dict:
+    """
+    Sprawdza, czy podany api_key istnieje w bazie danych i zwraca informacje o użytkowniku.
+
+    :param api_key: Klucz API do sprawdzenia
+    :return: Słownik zawierający klucze 'username', 'global_name', 'discord_id', 'avatar' i 'is_logged'
+    """
+    try:
+        # Połączenie z bazą danych
+        connection = sqlite3.connect(DB_PATH)
+        cursor = connection.cursor()
+
+        # Zapytanie SQL sprawdzające api_key i pobierające dane użytkownika
+        query = "SELECT username, global_name, discord_id, avatar FROM users WHERE api_key = ?"
+        cursor.execute(query, (api_key,))
+
+        # Pobranie wyniku
+        result = cursor.fetchone()
+
+        if result:
+            # Użytkownik istnieje, zwracamy jego dane i status zalogowania
+            return {
+                "username": result[0],
+                "global_name": result[1],
+                "discord_id": result[2],
+                "avatar": result[3],
+                "is_logged": True
+            }
+        else:
+            # Brak użytkownika z takim api_key
+            return {"username": None, "global_name": None, "discord_id": None, "avatar": None, "is_logged": False}
+
+    except sqlite3.Error as e:
+        print(f"Błąd bazy danych: {e}")
+        return {"username": None, "global_name": None, "discord_id": None, "avatar": None, "is_logged": False}
+    finally:
+        if connection:
+            connection.close()
+
+def get_username(api_key: str) -> str:
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT global_name FROM users WHERE api_key = ?", (api_key,))
+    result = cursor.fetchone()
+    conn.close()
+    return result[0] if result else 'guest'
+
+init_db()
+
+# Przykład użycia
+if __name__ == "__main__":
+    api_key_to_check = "4608ae37baed103bd3cf334d573c344dfac64c17099f52be8ac40b4e0e0b4b4f"
+    
+    print(get_username(api_key_to_check))

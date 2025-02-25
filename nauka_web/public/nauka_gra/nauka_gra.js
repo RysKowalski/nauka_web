@@ -155,13 +155,9 @@ function get_arguments() {
         }
     });
 
-    // Pobierz parametr 'user' (jeśli istnieje)
-    const user = [params.get("user")];
-
     // Zwróć obiekt z wynikami
     return {
         chances: trueArguments,
-        user: user
     };
 }
 
@@ -184,7 +180,7 @@ function on_user_wrong() {
 function move(user_answer) {
     const user_time = timer.getTime();
 
-    sendRequest({'user': username, 'time': user_time, 'answer': user_answer}, 'POST', '/api/nauka/move')
+    sendRequest({'time': user_time, 'answer': user_answer}, 'POST', '/api/nauka/move')
         .then((new_data) => {
             // Po zakończeniu operacji, przetwarzamy dane
             if (new_data && new_data.element_list) {
@@ -236,13 +232,11 @@ async function init() {
 		user_wrong.addEventListener('click', on_user_wrong)
 	} catch (error) {
 		console.error('Błąd inicjalizacji:', error);
-		showError('Nie udało się załadować danych początkowych.');
 	}
 }
 const timer = new Timer();
 timer.start();
 
 let answer_content = ''
-let username = get_arguments().user[0]
 
 document.addEventListener('DOMContentLoaded', init);

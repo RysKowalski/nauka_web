@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, Cookie
 from fastapi.responses import FileResponse
 
 import os
@@ -10,14 +10,13 @@ from typing import Dict, Union, List
 from nauka_web_api.backend import gra
 from nauka_web_api.backend.new_module_validation import validate_dict_structure
 from nauka_web_api.backend.save_new_module import save_new_module
-from nauka_web_api.backend import admin
-from nauka_web_api.backend import discord_login
+from nauka_web_api.backend import admin, login_stuff
 
 router: APIRouter = APIRouter()
 
 @router.get("/auth/callback")
 async def auth_callback(code: str, response: Response):
-	return await discord_login.auth_callback(code, response)
+	return await login_stuff.auth_callback(code, response)
 
 @router.get("/api/nauka/data")
 def get_info():
@@ -40,8 +39,8 @@ def user_exist(user: dict):
 		return {"exists": user_exists}  # Zwróć obiekt JSON
 
 @router.post('/api/nauka/init')
-def nauka_init(data: Dict[str, List[str]]):
-	user: str = data["user"][0]
+def nauka_init(data: Dict[str, List[str]], api_key: str = Cookie(None)):
+	user: str = login_stuff.get_username(api_key)
 	chances: list[str] = data["chances"]
 
 	print(data)
@@ -51,8 +50,8 @@ def nauka_init(data: Dict[str, List[str]]):
 	return updated_dict
 
 @router.post('/api/nauka/move')
-def nauka_move(data: dict) -> dict:
-	user: str = data['user']
+def nauka_move(data: dict, api_key: str = Cookie(None)) -> dict:
+	user: str = login_stuff.get_username(api_key)
 	answer_time: float = float(data['time'])
 	answer: bool = data["answer"]
 
@@ -64,12 +63,13 @@ def nauka_move(data: dict) -> dict:
 	return updated_dict
 
 @router.post('/api/nauka/submit')
-def submit_new_module(data: dict):
+def submit_new_module(data: dict, api_key: str = Cookie(None)):
 	print(data)
-	validated_data: dict = validate_dict_structure(data)
+	validated_data: dict = validate_dict_structure(data, api_key)
 	if validated_data['error']:
 		return validated_data
 	
+	data['username'] = login_stuff.get_user_status(api_key)['global_name']
 	save_new_module(data)
 	
 	return {'error': False, 'error_message': 'Udało się zapisać nowy moduł'}
@@ -98,11 +98,10 @@ def remove_module(data: Dict[str, str], api_key: str = Depends(admin.authenticat
 
 	return admin.remove_module(module_name)
 
-@router.get('/api/nauka/user_list')
-def get_user_list(api_key: str = Depends(admin.authenticate)):
-	return admin.get_user_list()
-
-
+@router.get('/api/get_user_status')
+def is_logged(api_key: str = Cookie(None)):
+	logged: dict = login_stuff.get_user_status(api_key)
+	return logged
 
 instancje_gry: gra.Instances = gra.Instances()
 

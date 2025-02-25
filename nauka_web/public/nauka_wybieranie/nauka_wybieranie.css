@@ -8,7 +8,7 @@ body {
 	color: #333;
 	line-height: 1.6;
   }
-  
+
   /* Nagłówki */
   h2 {
 	color: #444;
@@ -29,7 +29,7 @@ body {
 	outline: none;
 	transition: border-color 0.3s ease;
   }
-  
+
   .user:focus {
 	border-color: #007bff;
 	box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
@@ -241,6 +241,14 @@ body {
     height: 24px;
     filter: invert(100%);
 }
+
+/* Ustawienie oryginalnych kolorów dla avatarów */
+.original-avatar {
+  filter: none !important; /* Zapewnia, że żadne filtry CSS nie wpłyną na kolory */
+  border-radius: 50%; /* Zaokrąglij obraz, jeśli chcesz uzyskać avatar w kształcie koła */
+  object-fit: cover; /* Zachowuje proporcje obrazu */
+}
+
 
 #discord-login-mobile a {
     background: #5865F2;
