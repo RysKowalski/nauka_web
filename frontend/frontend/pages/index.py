@@ -1,5 +1,7 @@
 import reflex as rx
 
+from ..components import *
+
 class State(rx.State):
     count: int = 0
 
@@ -22,5 +24,6 @@ def index():
             color_scheme="grass",
             on_click=State.increment,
         ),
+        footer(),
         spacing="4",
     )
