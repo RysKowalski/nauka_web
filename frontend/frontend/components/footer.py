@@ -1,12 +1,14 @@
 import reflex as rx
 
+def load_version() -> str:
+	with open('../version.txt', 'r') as plik:
+		return plik.read()
 
 def footer():
-	return rx.fragment(
-	rx.box(
-		rx.box(
-			rx.text.span("Wersja: \u0142adowanie...", id="version"),
-			" | ",
+	return rx.box(
+		rx.flex(
+			rx.text.span(f"Wersja: {load_version()}", id="version"),
+			rx.text(" | "),
 			rx.el.a(
 				rx.image(
 					src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/github.svg",
@@ -17,8 +19,9 @@ def footer():
 				target="_blank",
 				class_name="repo-link",
 			),
-			class_name="footer",
-			text_align="center",
-		)
+			align="center",
+			justify="center",
+			gap="0.5rem",
+		),
+		class_name="footer"
 	)
-)

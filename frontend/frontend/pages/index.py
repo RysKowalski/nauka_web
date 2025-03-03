@@ -13,17 +13,7 @@ class State(rx.State):
 
 def index():
     return rx.hstack(
-        rx.button(
-            "Decrement",
-            color_scheme="ruby",
-            on_click=State.decrement,
-        ),
-        rx.heading(State.count, font_size="2em"),
-        rx.button(
-            "Increment",
-            color_scheme="grass",
-            on_click=State.increment,
-        ),
+        discord_login(),
         footer(),
         spacing="4",
     )
