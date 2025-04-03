@@ -1,47 +1,34 @@
-from fastapi import APIRouter
-from fastapi.responses import FileResponse, RedirectResponse
-from fastapi.staticfiles import StaticFiles
-
-from typing import Dict
-import json
-
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
-def get_path(name: str) -> str:
-	return os.path.join("nauka_web", "public", name, name + ".html")
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
-router: APIRouter = APIRouter()
+from nauka_web.server import router as router_main
+from nauka_web_api.server import router as router_api
 
-@router.get("/")
-def home():
-	# Zwrot głównego pliku HTML
-	# location = get_path('index')
-	# return FileResponse(location)
-	return RedirectResponse(url="/nauka/wybieranie", headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
+with open(os.path.join('version.txt'), 'r') as plik:
+	VERSION: str = plik.read()
 
-@router.get("/nauka/add_module")
-def nauka_add_modules():
-	location = get_path('nauka_add_modules')
-	return FileResponse(location)
+app: FastAPI = FastAPI()
+app.include_router(router_main)
+app.include_router(router_api)
 
-@router.get("/nauka/wybieranie")
-def nauka_wybieranie():
-	# Zwrot pliku HTML dla nauka/wybieranie
-	location = get_path('nauka_wybieranie')
+app.mount("/nauka_web", StaticFiles(directory=os.path.join(os.getcwd(), "nauka_web/public")), name="nauka_web")
 
-	response = FileResponse(location)
-	response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, proxy-revalidate"
+@app.get('/favicon.ico')
+def favicon():
+	return FileResponse(os.path.join('favicon.ico'))
 
-	return response
-	
-@router.get("/nauka/gra")
-def nauka_gra():
-	location = get_path('nauka_gra')
-	return FileResponse(location)
+@app.get('/version')
+def get_version():
+	return {'version': VERSION}
 
 if __name__ == "__main__":
 	import uvicorn
 
 	PORT: int = 3000
 
-	uvicorn.run(router, host="127.0.0.1", port=PORT)
+	uvicorn.run(app, host="127.0.0.1", port=PORT)
