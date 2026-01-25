@@ -1,6 +1,7 @@
 import os
-import sqlite3
 import secrets
+import sqlite3
+
 import httpx
 from fastapi import HTTPException, Response
 from fastapi.responses import RedirectResponse

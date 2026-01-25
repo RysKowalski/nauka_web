@@ -44,7 +44,8 @@ def user_exist(user: dict):
 
 
 @router.post("/api/nauka/init")
-def nauka_init(data: Dict[str, List[str]], api_key: str = Cookie(None)):
+def start_new_session(data: Dict[str, List[str]], api_key: str = Cookie(None)):
+    """starts new session for the game"""
     user: str = login_stuff.get_username(api_key)
     chances: list[str] = data["chances"]
 
@@ -101,12 +102,12 @@ def remove_module(data: Dict[str, str], api_key: str = Depends(admin.authenticat
 
 
 @router.get("/api/nauka/modules")
-def get_users(api_key: str = Depends(admin.authenticate)) -> list[dict[str, str]]:
+def get_modules(api_key: str = Depends(admin.authenticate)) -> list[dict[str, str]]:
     return admin.get_module_list()
 
 
 @router.get("/api/get_user_status")
-def is_logged(api_key: str = Cookie(None)):
+def get_user_status(api_key: str = Cookie(None)):
     logged: dict = login_stuff.get_user_status(api_key)
     return logged
 
@@ -118,4 +119,3 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(router, host="127.0.0.1", port=PORT)
-

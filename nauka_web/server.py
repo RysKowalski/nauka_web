@@ -1,6 +1,7 @@
+import os
+
 from fastapi import APIRouter
 from fastapi.responses import FileResponse, RedirectResponse
-import os
 
 
 def get_path(name: str) -> str:

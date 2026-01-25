@@ -1,9 +1,9 @@
-from typing import Any, Self
-import os
 import json
+import os
+from math import log2
+from typing import Any, Self
 
 import numpy as np
-from math import log2
 
 
 class Game:
@@ -164,4 +164,3 @@ if __name__ == "__main__":
 
     print()
     print(instances.instances["rysiek"].get_data())
-
