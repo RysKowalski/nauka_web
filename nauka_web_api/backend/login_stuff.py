@@ -114,17 +114,14 @@ def get_user_status(api_key: str) -> dict:
     connection = sqlite3.connect(DB_PATH)
     cursor = connection.cursor()
     try:
-        # Połączenie z bazą danych
+        cursor.execute(
+            "SELECT username, global_name, discord_id, avatar FROM users WHERE api_key = ?",
+            (api_key,),
+        )
 
-        # Zapytanie SQL sprawdzające api_key i pobierające dane użytkownika
-        query = "SELECT username, global_name, discord_id, avatar FROM users WHERE api_key = ?"
-        cursor.execute(query, (api_key,))
-
-        # Pobranie wyniku
         result = cursor.fetchone()
 
-        if result:
-            # Użytkownik istnieje, zwracamy jego dane i status zalogowania
+        if result is not None:
             return {
                 "username": result[0],
                 "global_name": result[1],
@@ -133,7 +130,6 @@ def get_user_status(api_key: str) -> dict:
                 "is_logged": True,
             }
         else:
-            # Brak użytkownika z takim api_key
             return {
                 "username": None,
                 "global_name": None,

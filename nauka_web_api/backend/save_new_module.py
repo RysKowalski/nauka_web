@@ -15,7 +15,7 @@ def save_new_module(data: dict):
 
     username: str = data["username"]
 
-    for i, element in enumerate(data["elements"]):
+    for element in data["elements"]:
         module_datas.append(element["answer"])
         module_questions.append(element["question"])
 
@@ -30,4 +30,3 @@ def save_new_module(data: dict):
         os.path.join("nauka_web_api", "backend", "data", "nauka_questions.json"), "w"
     ) as plik:
         json.dump(modules, plik)
-

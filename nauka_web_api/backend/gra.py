@@ -1,13 +1,13 @@
 import json
 import os
 from math import log2
-from typing import Any, Self
+from typing import Any
 
 import numpy as np
 
 
 class Game:
-    def __init__(self: Self, elements: list[str], name: str) -> None:
+    def __init__(self, elements: list[str], name: str) -> None:
         self.modules: list[str] = elements
         self.elements: list[dict] = []
         self.max_points: int = 0
@@ -42,7 +42,7 @@ class Game:
                 }
             )
 
-    def get_data(self: Self) -> dict:
+    def get_data(self) -> dict:
         data: dict = {
             "element_list": dict(
                 zip(
@@ -58,7 +58,7 @@ class Game:
 
         return data
 
-    def move(self: Self, answer: bool, answer_time: float) -> None:
+    def move(self, answer: bool, answer_time: float) -> None:
         if answer_time / 10 > 1:
             self.elements[self.current_element]["chance"] *= log2(answer_time) - 2.7
 
@@ -78,7 +78,7 @@ class Game:
         )
         self.current_element = np.random.choice(range(0, len(weights)), p=weights)
 
-    def load_user_data(self: Self, name: str, elements: list[str]):
+    def load_user_data(self, name: str, elements: list[str]):
         """
         Loads user data from the 'nauka_user_data.json' file.
 
@@ -125,7 +125,7 @@ class Game:
 
         return max_points, chances
 
-    def save_user_data(self: Self) -> None:
+    def save_user_data(self) -> None:
         with open(
             os.path.join("nauka_web_api", "backend", "data", "nauka_user_data.json"),
             "r",
@@ -145,10 +145,10 @@ class Game:
 
 
 class Instances:
-    def __init__(self: Self) -> None:
+    def __init__(self) -> None:
         self.instances: dict[str, Game] = {}
 
-    def new_instance(self: Self, name: str, elements: list[str]) -> None:
+    def new_instance(self, name: str, elements: list[str]) -> None:
         new_instance: Game = Game(elements, name)
         self.instances[name] = new_instance
 

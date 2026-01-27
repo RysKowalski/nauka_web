@@ -19,13 +19,8 @@ async def auth_callback(code: str, response: Response):
 
 @router.get("/api/nauka/data")
 def get_info():
-    # Ścieżka do pliku
     file_path = os.path.join("nauka_web_api", "backend", "data", "nauka_questions.json")
-
-    # Tworzymy odpowiedź FileResponse
     response = FileResponse(file_path)
-
-    # Dodajemy nagłówek Cache-Control
     response.headers["Cache-Control"] = (
         "no-store, no-cache, must-revalidate, proxy-revalidate"
     )
@@ -35,24 +30,21 @@ def get_info():
 
 @router.post("/api/nauka/user_exist")
 def user_exist(user: dict):
-    print(user)
     with open(
         os.path.join("nauka_web_api", "backend", "data", "nauka_user_data.json"), "r"
     ) as plik:
         user_exists = user["user"] in json.load(plik)
-        return {"exists": user_exists}  # Zwróć obiekt JSON
+        return {"exists": user_exists}
 
 
 @router.post("/api/nauka/init")
-def start_new_session(data: Dict[str, List[str]], api_key: str = Cookie(None)):
-    """starts new session for the game"""
+def start_new_game_session(data: Dict[str, List[str]], api_key: str = Cookie(None)):
     user: str = login_stuff.get_username(api_key)
     chances: list[str] = data["chances"]
 
-    print(data)
-    instancje_gry.new_instance(user, chances)
+    gameInstances.new_instance(user, chances)
 
-    updated_dict: dict = instancje_gry.instances[user].get_data()
+    updated_dict: dict = gameInstances.instances[user].get_data()
     return updated_dict
 
 
@@ -62,17 +54,14 @@ def nauka_move(data: dict, api_key: str = Cookie(None)) -> dict:
     answer_time: float = float(data["time"])
     answer: bool = data["answer"]
 
-    print(data)
+    gameInstances.instances[user].move(answer, answer_time)
 
-    instancje_gry.instances[user].move(answer, answer_time)
-
-    updated_dict: dict = instancje_gry.instances[user].get_data()
+    updated_dict: dict = gameInstances.instances[user].get_data()
     return updated_dict
 
 
 @router.post("/api/nauka/submit")
 def submit_new_module(data: dict, api_key: str = Cookie(None)):
-    print(data)
     validated_data: dict = validate_dict_structure(data, api_key)
     if validated_data["error"]:
         return validated_data
@@ -107,12 +96,12 @@ def get_modules(api_key: str = Depends(admin.authenticate)) -> list[dict[str, st
 
 
 @router.get("/api/get_user_status")
-def get_user_status(api_key: str = Cookie(None)):
+def get_user_status(api_key: str = Cookie(None)) -> dict:
     logged: dict = login_stuff.get_user_status(api_key)
     return logged
 
 
-instancje_gry: gra.Instances = gra.Instances()
+gameInstances: gra.Instances = gra.Instances()
 
 if __name__ == "__main__":
     PORT: int = 3001
