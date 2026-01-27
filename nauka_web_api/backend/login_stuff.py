@@ -1,6 +1,7 @@
 import os
 import secrets
 import sqlite3
+from typing import Any, Optional, TypedDict
 
 import httpx
 from fastapi import HTTPException, Response
@@ -104,7 +105,15 @@ async def auth_callback(code: str, response: Response):
         return response
 
 
-def get_user_status(api_key: str) -> dict:
+class UserStatus(TypedDict):
+    username: Optional[str]
+    global_name: Optional[str]
+    discord_id: Optional[str]
+    avatar: Optional[str]
+    is_logged: bool
+
+
+def get_user_status(api_key: str) -> UserStatus:
     """
     Sprawdza, czy podany api_key istnieje w bazie danych i zwraca informacje o użytkowniku.
 

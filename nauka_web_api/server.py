@@ -1,13 +1,18 @@
 import json
 import os
-from typing import Dict, List
+from typing import Dict, TypedDict, cast
 
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Response
 from fastapi.responses import FileResponse
 
 from nauka_web_api.backend import admin, gra, login_stuff
+from nauka_web_api.backend.login_stuff import UserStatus
 from nauka_web_api.backend.new_module_validation import validate_dict_structure
-from nauka_web_api.backend.save_new_module import save_new_module
+from nauka_web_api.backend.save_new_module import (
+    ModuleData,
+    ModuleDataFromAPI,
+    save_new_module,
+)
 
 router: APIRouter = APIRouter()
 
@@ -37,8 +42,12 @@ def user_exist(user: dict):
         return {"exists": user_exists}
 
 
+class InitData(TypedDict):
+    chances: list[str]
+
+
 @router.post("/api/nauka/init")
-def start_new_game_session(data: Dict[str, List[str]], api_key: str = Cookie(None)):
+def start_new_game_session(data: InitData, api_key: str = Cookie(None)):
     user: str = login_stuff.get_username(api_key)
     chances: list[str] = data["chances"]
 
@@ -48,8 +57,13 @@ def start_new_game_session(data: Dict[str, List[str]], api_key: str = Cookie(Non
     return updated_dict
 
 
+class MoveData(TypedDict):
+    time: str
+    answer: bool
+
+
 @router.post("/api/nauka/move")
-def nauka_move(data: dict, api_key: str = Cookie(None)) -> dict:
+def nauka_move(data: MoveData, api_key: str = Cookie(None)) -> dict:
     user: str = login_stuff.get_username(api_key)
     answer_time: float = float(data["time"])
     answer: bool = data["answer"]
@@ -61,12 +75,14 @@ def nauka_move(data: dict, api_key: str = Cookie(None)) -> dict:
 
 
 @router.post("/api/nauka/submit")
-def submit_new_module(data: dict, api_key: str = Cookie(None)):
-    validated_data: dict = validate_dict_structure(data, api_key)
+def submit_new_module(dataFromAPI: ModuleDataFromAPI, api_key: str = Cookie(None)):
+    validated_data: dict = validate_dict_structure(dataFromAPI, api_key)
     if validated_data["error"]:
         return validated_data
 
-    data["username"] = login_stuff.get_user_status(api_key)["global_name"]
+    temporary_data: dict = cast(dict, dataFromAPI)
+    temporary_data["username"] = login_stuff.get_user_status(api_key)["global_name"]
+    data: ModuleData = cast(ModuleData, temporary_data)
     save_new_module(data)
 
     return {"error": False, "error_message": "Udało się zapisać nowy moduł"}
@@ -96,8 +112,8 @@ def get_modules(api_key: str = Depends(admin.authenticate)) -> list[dict[str, st
 
 
 @router.get("/api/get_user_status")
-def get_user_status(api_key: str = Cookie(None)) -> dict:
-    logged: dict = login_stuff.get_user_status(api_key)
+def get_user_status(api_key: str = Cookie(None)) -> UserStatus:
+    logged: UserStatus = login_stuff.get_user_status(api_key)
     return logged
 
 

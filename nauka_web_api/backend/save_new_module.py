@@ -1,8 +1,25 @@
 import json
 import os
+from typing import Optional, TypedDict
 
 
-def save_new_module(data: dict):
+class ModuleElementData(TypedDict):
+    question: str
+    answer: str
+
+
+class ModuleData(TypedDict):
+    name: str
+    elements: list[ModuleElementData]
+    username: str
+
+
+class ModuleDataFromAPI(TypedDict):
+    name: str
+    elements: list[ModuleElementData]
+
+
+def save_new_module(data: ModuleData):
     with open(
         os.path.join("nauka_web_api", "backend", "data", "nauka_questions.json"), "r"
     ) as plik:
