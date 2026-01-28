@@ -13,13 +13,17 @@ class Modules(TypedDict):
     username: str
 
 
+class ReturnMessage(TypedDict):
+    message: str
+
+
 def authenticate(x_api_key: Optional[str] = Header(None)):
     if x_api_key != ADMIN_API_KEY:
         raise HTTPException(status_code=401, detail="Invalid API Key")
     return x_api_key
 
 
-def add_user(username: str):
+def add_user(username: str) -> ReturnMessage:
     file_path = os.path.join("nauka_web_api", "backend", "data", "nauka_user_data.json")
 
     try:
@@ -47,7 +51,7 @@ def add_user(username: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-def remove_user(username: str):
+def remove_user(username: str) -> ReturnMessage:
     file_path = os.path.join("nauka_web_api", "backend", "data", "nauka_user_data.json")
     try:
         # Odczyt danych z pliku
@@ -73,7 +77,7 @@ def remove_user(username: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-def remove_module(module_name: str):
+def remove_module(module_name: str) -> ReturnMessage:
     file_path = os.path.join("nauka_web_api", "backend", "data", "nauka_questions.json")
     try:
         # Odczyt danych z pliku
@@ -129,4 +133,3 @@ def get_module_list() -> list[dict[str, str]]:
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-

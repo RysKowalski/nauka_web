@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Dict, TypedDict, cast
+from typing import TypedDict, cast
 
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Response
 from fastapi.responses import FileResponse
@@ -33,12 +33,20 @@ def get_info():
     return response
 
 
+class User(TypedDict):
+    user: str
+
+
+class UserExistsReturn(TypedDict):
+    exists: bool
+
+
 @router.post("/api/nauka/user_exist")
-def user_exist(user: dict):
+def user_exist(user: User) -> UserExistsReturn:
     with open(
         os.path.join("nauka_web_api", "backend", "data", "nauka_user_data.json"), "r"
     ) as plik:
-        user_exists = user["user"] in json.load(plik)
+        user_exists: bool = user["user"] in json.load(plik)
         return {"exists": user_exists}
 
 
@@ -47,13 +55,15 @@ class InitData(TypedDict):
 
 
 @router.post("/api/nauka/init")
-def start_new_game_session(data: InitData, api_key: str = Cookie(None)):
+def start_new_game_session(
+    data: InitData, api_key: str = Cookie(None)
+) -> gra.GameStateReturnData:
     user: str = login_stuff.get_username(api_key)
     chances: list[str] = data["chances"]
 
     gameInstances.new_instance(user, chances)
 
-    updated_dict: dict = gameInstances.instances[user].get_data()
+    updated_dict: gra.GameStateReturnData = gameInstances.instances[user].get_data()
     return updated_dict
 
 
@@ -63,14 +73,14 @@ class MoveData(TypedDict):
 
 
 @router.post("/api/nauka/move")
-def nauka_move(data: MoveData, api_key: str = Cookie(None)) -> dict:
+def nauka_move(data: MoveData, api_key: str = Cookie(None)) -> gra.GameStateReturnData:
     user: str = login_stuff.get_username(api_key)
     answer_time: float = float(data["time"])
     answer: bool = data["answer"]
 
     gameInstances.instances[user].move(answer, answer_time)
 
-    updated_dict: dict = gameInstances.instances[user].get_data()
+    updated_dict: gra.GameStateReturnData = gameInstances.instances[user].get_data()
     return updated_dict
 
 
@@ -88,8 +98,14 @@ def submit_new_module(dataFromAPI: ModuleDataFromAPI, api_key: str = Cookie(None
     return {"error": False, "error_message": "Udało się zapisać nowy moduł"}
 
 
+class RemoveUserData(TypedDict):
+    username: str
+
+
 @router.delete("/api/nauka/remove_user")
-def remove_user(data: Dict[str, str], api_key: str = Depends(admin.authenticate)):
+def remove_user(
+    data: RemoveUserData, api_key: str = Depends(admin.authenticate)
+) -> admin.ReturnMessage:
     username = data.get("username")
     if not username:
         raise HTTPException(status_code=400, detail="Username is required")
@@ -97,8 +113,14 @@ def remove_user(data: Dict[str, str], api_key: str = Depends(admin.authenticate)
     return admin.remove_user(username)
 
 
+class RemoveModuleData(TypedDict):
+    module_name: str
+
+
 @router.delete("/api/nauka/remove_module")
-def remove_module(data: Dict[str, str], api_key: str = Depends(admin.authenticate)):
+def remove_module(
+    data: RemoveModuleData, api_key: str = Depends(admin.authenticate)
+) -> admin.ReturnMessage:
     module_name = data.get("module_name")
     if not module_name:
         raise HTTPException(status_code=400, detail="Username is required")

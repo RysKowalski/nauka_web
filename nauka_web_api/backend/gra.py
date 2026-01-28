@@ -1,15 +1,30 @@
 import json
 import os
 from math import log2
-from typing import Any
+from typing import Any, TypedDict
 
 import numpy as np
+
+
+class GameStateReturnData(TypedDict):
+    element_list: dict[str, float]
+    max_points: int
+    question: str
+    answer: str
+    points: int
+
+
+class GameElement(TypedDict):
+    name: str
+    chance: float
+    question: str
+    answer: str
 
 
 class Game:
     def __init__(self, elements: list[str], name: str) -> None:
         self.modules: list[str] = elements
-        self.elements: list[dict] = []
+        self.elements: list[GameElement] = []
         self.max_points: int = 0
         self.points: int = 0
         self.current_element: int = 0
@@ -42,8 +57,8 @@ class Game:
                 }
             )
 
-    def get_data(self) -> dict:
-        data: dict = {
+    def get_data(self) -> GameStateReturnData:
+        data: GameStateReturnData = {
             "element_list": dict(
                 zip(
                     [item["name"] for item in self.elements],
