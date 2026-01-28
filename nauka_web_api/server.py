@@ -7,7 +7,10 @@ from fastapi.responses import FileResponse
 
 from nauka_web_api.backend import admin, gra, login_stuff
 from nauka_web_api.backend.login_stuff import UserStatus
-from nauka_web_api.backend.new_module_validation import validate_dict_structure
+from nauka_web_api.backend.new_module_validation import (
+    ReturnMessageWithPossibleError,
+    validate_dict_structure,
+)
 from nauka_web_api.backend.save_new_module import (
     ModuleData,
     ModuleDataFromAPI,
@@ -85,8 +88,12 @@ def nauka_move(data: MoveData, api_key: str = Cookie(None)) -> gra.GameStateRetu
 
 
 @router.post("/api/nauka/submit")
-def submit_new_module(dataFromAPI: ModuleDataFromAPI, api_key: str = Cookie(None)):
-    validated_data: dict = validate_dict_structure(dataFromAPI, api_key)
+def submit_new_module(
+    dataFromAPI: ModuleDataFromAPI, api_key: str = Cookie(None)
+) -> ReturnMessageWithPossibleError:
+    validated_data: ReturnMessageWithPossibleError = validate_dict_structure(
+        dataFromAPI, api_key
+    )
     if validated_data["error"]:
         return validated_data
 
@@ -126,11 +133,6 @@ def remove_module(
         raise HTTPException(status_code=400, detail="Username is required")
 
     return admin.remove_module(module_name)
-
-
-@router.get("/api/nauka/modules")
-def get_modules(api_key: str = Depends(admin.authenticate)) -> list[dict[str, str]]:
-    return admin.get_module_list()
 
 
 @router.get("/api/get_user_status")

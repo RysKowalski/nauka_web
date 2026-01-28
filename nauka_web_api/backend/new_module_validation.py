@@ -1,7 +1,13 @@
+from typing import TypedDict
 from nauka_web_api.backend.login_stuff import get_user_status
 
 
-def validate_dict_structure(data, api_key: str):
+class ReturnMessageWithPossibleError(TypedDict):
+    error: bool
+    error_message: str
+
+
+def validate_dict_structure(data, api_key: str) -> ReturnMessageWithPossibleError:
     if not get_user_status(api_key)["is_logged"]:
         return {
             "error": True,

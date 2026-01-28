@@ -119,17 +119,26 @@ def get_user_list() -> dict[str, list[str]]:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-def get_module_list() -> list[dict[str, str]]:
-    file_path = os.path.join("nauka_web_api", "backend", "data", "nauka_questions.json")
+class ModuleData(TypedDict):
+    data: list[str]
+    questions: list[str]
+    username: str
 
-    try:
-        with open(file_path, "r") as plik:
-            modules: dict[str, Modules] = json.load(plik)
 
-        return_data: list[dict[str, str]] = []
-        for module in modules.keys():
-            return_data.append({module: modules[module]["username"]})
-        return return_data
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+# def get_module_list() -> list[ModuleData]:
+#     print("\nDOES THIS EVEN WORK???\n")
+#     print("\nDOES THIS EVEN WORK???\n")
+#     print("\nDOES THIS EVEN WORK???\n")
+#     file_path = os.path.join("nauka_web_api", "backend", "data", "nauka_questions.json")
+#
+#     try:
+#         with open(file_path, "r") as plik:
+#             modules: dict[str, ModuleData] = json.load(plik)
+#
+#         return_data: list[ModuleData] = []
+#         for module in modules.keys():
+#             return_data.append({module: modules[module]["username"]})
+#         return return_data
+#
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))

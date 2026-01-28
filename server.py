@@ -31,6 +31,7 @@ def favicon():
 
 @app.get("/version")
 def get_version():
+    """get version string like "1.3.1" """
     return {"version": VERSION}
 
 
