@@ -34,10 +34,16 @@ def get_version():
     return {"version": VERSION}
 
 
-if __name__ == "__main__":
+def run():
     import uvicorn
+    from uvicorn.config import LOGGING_CONFIG
 
+    LOGGING_CONFIG["formatters"]["default"]["fmt"] = (
+        "%(asctime)s [%(name)s] %(levelprefix)s %(message)s"
+    )
     PORT: int = 3000
+    uvicorn.run(app)
 
-    uvicorn.run(app, host="127.0.0.1", port=PORT)
 
+if __name__ == "__main__":
+    run()
