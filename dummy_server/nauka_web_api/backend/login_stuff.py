@@ -1,7 +1,7 @@
 import os
 import secrets
 import sqlite3
-from typing import Any, Optional, TypedDict
+from typing import Optional, TypedDict
 
 import httpx
 from fastapi import HTTPException, Response
@@ -80,7 +80,7 @@ async def auth_callback(code: str, response: Response):
         cursor.execute("SELECT api_key FROM users WHERE discord_id = ?", (discord_id,))
         user = cursor.fetchone()
 
-        if user:
+        if user is not None:
             api_key = user[0]  # Pobranie istniejącego klucza API
         else:
             # Generowanie nowego klucza API
