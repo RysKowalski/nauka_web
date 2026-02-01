@@ -93,7 +93,7 @@ class Game:
         )
         self.current_element = np.random.choice(range(0, len(weights)), p=weights)
 
-    def load_user_data(self, name: str, elements: list[str]):
+    def load_user_data(self, name: str, elements: list[str]) -> tuple[int, list[float]]:
         """
         Loads user data from the 'nauka_user_data.json' file.
 
@@ -116,7 +116,7 @@ class Game:
                 points_data = user_data.get("points", {})
 
             if "|".join(elements) in points_data:
-                max_points = points_data["|".join(elements)]["max_points"]
+                max_points: int = points_data["|".join(elements)]["max_points"]
                 chances = points_data["|".join(elements)]["chances"]
             else:
                 with open(
@@ -130,12 +130,12 @@ class Game:
                     for module in elements:
                         questions.extend(questions_data[module]["questions"])
 
-                max_points = 0
+                max_points: int = 0
                 chances = [100 for _ in range(len(questions))]
 
         except FileNotFoundError:
             # Handle file not found
-            max_points = 0
+            max_points: int = 0
             chances = [100 for _ in elements]
 
         return max_points, chances

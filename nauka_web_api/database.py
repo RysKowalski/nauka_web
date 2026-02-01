@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 import sqlite3
 from sqlite3 import Connection, Cursor
-from typing import Iterator
+from typing import Iterator, cast
 from dataclasses import dataclass
 
 
@@ -11,6 +11,18 @@ class User:
     username: str
     visibleName: str
     avatarLink: str
+
+
+@dataclass
+class ModuleEntry:
+    question: str
+    answer: str
+
+
+@dataclass
+class Module:
+    name: str
+    entries: list[ModuleEntry]
 
 
 class Database:
@@ -101,6 +113,7 @@ class Database:
         USERNAME_INDEX: int = 0
         VISIBLE_NAME_INDEX: int = 1
         AVATAR_INDEX: int = 2
+
         with self._connect() as conn:
             cursor: Cursor = conn.cursor()
 
@@ -122,3 +135,59 @@ class Database:
             output[AVATAR_INDEX],
         )
         return userData
+
+    def add_module(self, module: Module, userId: int) -> None:
+        with self._connect() as conn:
+            cursor: Cursor = conn.cursor()
+
+            cursor.execute(
+                """
+                INSERT INTO modules (name, user_id)
+                VALUES (?, ?)
+            """,
+                (module.name, userId),
+            )
+
+            moduleId: int = cast(int, cursor.lastrowid)
+
+            cursor.executemany(
+                """
+                INSERT INTO entries (module_id, position, question, answer)
+                VALUES (?, ?, ?, ?)
+            """,
+                [
+                    (moduleId, i + 1, entry.question, entry.answer)
+                    for i, entry in enumerate(module.entries)
+                ],
+            )
+
+            conn.commit()
+
+    def get_module(self, userId: int, moduleName: str) -> Module:
+        with self._connect() as conn:
+            cursor: Cursor = conn.cursor()
+
+            cursor.execute(
+                """SELECT id FROM modules WHERE user_id=? AND name=?""",
+                (userId, moduleName),
+            )
+
+            moduleId: tuple[int] | None = cursor.fetchone()
+            if moduleId is None:
+                raise LookupError(
+                    f"the user module with the ID '{userId}' and name '{moduleName}' does not exists"
+                )
+
+            cursor.execute("""
+                SELECT question, answer
+                FROM entries
+                ORDER BY position;
+            """)
+            rawEntries: list[tuple[str, str]] = cursor.fetchall()
+
+        entries: list[ModuleEntry] = []
+        for rawEntry in rawEntries:
+            entry: ModuleEntry = ModuleEntry(rawEntry[0], rawEntry[1])
+            entries.append(entry)
+
+        return Module(moduleName, entries)
