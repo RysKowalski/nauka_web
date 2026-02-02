@@ -81,6 +81,7 @@ class Database:
                 CREATE TABLE IF NOT EXISTS chances (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     entry_id INTEGER NOT NULL,
+                    module_id INTEGER NOT NULL,
                     user_id INTEGER NOT NULL,
                     chance REAL NOT NULL
                 )
@@ -142,9 +143,9 @@ class Database:
 
             cursor.execute(
                 """
-                INSERT INTO modules (name, user_id)
-                VALUES (?, ?)
-            """,
+                    INSERT INTO modules (name, user_id)
+                    VALUES (?, ?)
+                """,
                 (module.name, userId),
             )
 
@@ -152,13 +153,26 @@ class Database:
 
             cursor.executemany(
                 """
-                INSERT INTO entries (module_id, position, question, answer)
-                VALUES (?, ?, ?, ?)
-            """,
+                    INSERT INTO entries (module_id, position, question, answer)
+                    VALUES (?, ?, ?, ?)
+                """,
                 [
                     (moduleId, i + 1, entry.question, entry.answer)
                     for i, entry in enumerate(module.entries)
                 ],
+            )
+
+            cursor.execute("""SELECT id FROM entries WHERE module_id=?""", (moduleId,))
+            entryIds: list[int] = [
+                entryIdAsTuple[0] for entryIdAsTuple in cursor.fetchall()
+            ]
+
+            cursor.executemany(
+                """
+                INSERT INTO chances (entry_id, module_id, user_id, chance)
+                VALUES (?, ?, ?, ?)
+                """,
+                [(entryId, moduleId, userId, 1.0) for entryId in entryIds],
             )
 
             conn.commit()
@@ -191,3 +205,25 @@ class Database:
             entries.append(entry)
 
         return Module(moduleName, entries)
+
+    def get_chances(self, userId, moduleName) -> list[float]:
+        with self._connect() as conn:
+            cursor: Cursor = conn.cursor()
+
+            cursor.execute(
+                """SELECT id FROM modules WHERE user_id=? AND name=?""",
+                (userId, moduleName),
+            )
+
+            moduleId: tuple[int] | None = cursor.fetchone()
+            if moduleId is None:
+                raise LookupError(
+                    f"the user module with the ID '{userId}' and name '{moduleName}' does not exists"
+                )
+
+            cursor.execute("""
+                    SELECT chance
+                    FROM chances
+                    WHERE module_id=?
+                    ORDER BY 
+            """)
