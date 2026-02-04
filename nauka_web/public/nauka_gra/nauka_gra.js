@@ -38,7 +38,7 @@ class Timer {
   }
 }
 
-function answer(show) {
+function change_answer(show) {
   const element = document.getElementById('answer');
   if (show) {
     element.textContent = answer_content;
@@ -48,25 +48,24 @@ function answer(show) {
     element.classList.add('hidden');
     element.classList.remove('visible');
   }
-
 }
 
-function question(text) {
+function show_question(text) {
   const element = document.getElementById('question');
   element.textContent = text;
 }
 
-function points(number) {
+function show_points(number) {
   const element = document.getElementById('points');
   element.textContent = 'punkty: ' + number;
 }
 
-function max_points(number) {
+function show_max_points(number) {
   const element = document.getElementById('max_points');
   element.textContent = 'Najwięcej punktów: ' + number;
 }
 
-function done_button(show) {
+function show_done_button(show) {
   const element = document.getElementById('done_button');
   if (show) {
     element.classList.add('visible');
@@ -140,7 +139,7 @@ async function sendRequest(data, method, url) {
   }
 }
 
-function get_arguments() {
+function get_url_arguments() {
   // Pobierz aktualny URL
   const url = new URL(window.location.href);
 
@@ -157,16 +156,15 @@ function get_arguments() {
 
   // Zwróć obiekt z wynikami
   return {
-    chances: trueArguments,
+    modules: trueArguments,
   };
 }
 
 function on_done_button() {
   timer.pause()
-  done_button(false)
+  show_done_button(false)
   user_choice_buttons(true)
-  answer(true)
-
+  change_answer(true)
 }
 
 function on_user_correct() {
@@ -184,18 +182,18 @@ function move(user_answer) {
     .then((new_data) => {
       // Po zakończeniu operacji, przetwarzamy dane
       if (new_data && new_data.element_list) {
-        points(new_data.points);
-        max_points(new_data.max_points);
-        question(new_data.question);
+        show_points(new_data.points);
+        show_max_points(new_data.max_points);
+        show_question(new_data.question);
         answer_content = new_data.answer;
         update_chances(new_data.element_list);
       } else {
         console.error('Niepoprawne dane zwrócone przez serwer:', new_data);
       }
 
-      answer(false);
+      change_answer(false);
       user_choice_buttons(false);
-      done_button(true);
+      show_done_button(true);
       timer.set(0);
       timer.start();
     })
@@ -206,18 +204,18 @@ function move(user_answer) {
 
 async function init() {
   try {
-    points(0);
-    max_points(0);
-    question('Brak pytania')
-    answer(false)
+    show_points(0);
+    show_max_points(0);
+    show_question('Brak pytania')
+    change_answer(false)
     show_chances(false)
     update_chances({ 'brak': 0 })
-    done_button(true)
+    show_done_button(true)
     user_choice_buttons(false)
-    const data = await sendRequest(get_arguments(), 'POST', '/api/nauka/init');
+    const data = await sendRequest(get_url_arguments(), 'POST', '/api/nauka/init');
     if (data) {
-      max_points(data.max_points);
-      question(data.question)
+      show_max_points(data.max_points);
+      show_question(data.question)
       update_chances(data.element_list)
       answer_content = data.answer
     }

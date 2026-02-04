@@ -54,7 +54,7 @@ def user_exist(user: User) -> UserExistsReturn:
 
 
 class InitData(TypedDict):
-    chances: list[float]
+    modules: list[str]
 
 
 @router.post("/api/nauka/init")
@@ -62,7 +62,7 @@ def start_new_game_session(
     data: InitData, api_key: str = Cookie(None)
 ) -> gra.GameStateReturnData:
     user: str = login_stuff.get_username(api_key)
-    chances: list[float] = data["chances"]
+    chances: list[str] = data["modules"]
 
     gameInstances.new_instance(user, chances)
 
